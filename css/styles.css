@@ -85,6 +85,10 @@ header::before {
     color: #fff;
 }
 
+.navbar nav ul a:hover {
+    border-bottom: 2px #fff solid;
+}
+
 
 /* hero-content */
 .hero {
@@ -162,6 +166,23 @@ header::before {
 
 .cards .card-3 {
     background: var(--primary-color);
+}
+
+/* about */
+.about {
+    padding: 100px 0;
+    color: #164753;
+}
+
+.about h1 {
+    font-weight: 900;
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+
+.about p {
+    font-size: 20px;
+    font-weight: bold;
 }
 
 /* Utility Classes */
