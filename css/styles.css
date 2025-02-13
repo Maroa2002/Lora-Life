@@ -83,18 +83,18 @@ header::before {
 
 
 /* hero-content */
-.hero-content {
+.hero {
     height: 800px;
     padding: 100px;
 }
 
-.hero-content h1 {
+.hero h1 {
     font-weight: 900;
     font-size: 50px;
     line-height: 1.6;
 }
 
-.hero-content p {
+.hero p {
     margin: 30px 0;
     font-size: 20px;
     font-weight: bold;
