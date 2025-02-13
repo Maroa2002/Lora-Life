@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
 
+/* Universal selector */
 * {
     margin: 0;
     padding: 0;
@@ -12,6 +13,7 @@ body {
     text-align: center;
 }
 
+/* General Styles */
 a {
     text-decoration: none;
     color: #333;
@@ -32,23 +34,31 @@ h2 {
     margin: 10px 0;
 }
 
+/* header */
 header {
     position: relative;
     width: 100%;
     height: 90vh;
+    background: url(./../images/vet.jpg) center/cover no-repeat;
     text-align: center;
+    color: #fff;
 }
 
 /* Adding an overlay for transparency */
 header::before {
     content: "";
     position: absolute;
+    background: rgba(0, 0, 0, 0.6);
     top: 0px;
     bottom: 0px;
     left: 0px;
     right: 0px;
-    background: url(./../images/vet.jpg) center/cover no-repeat;
-    opacity: 0.25;
+    z-index: 1;
+}
+
+.header-content {
+    position: relative;
+    z-index: 2;
 }
 
 /* Navbar Styling */
@@ -68,7 +78,9 @@ header::before {
     color: #333;
     margin: 0 10px;
     padding: 10px;
+    color: #fff;
 }
+
 
 /* hero-content */
 .hero-content {
@@ -93,8 +105,8 @@ header::before {
     width: 200px;
     padding: 10px 30px;
     cursor: pointer;
-    color: #333;
-    border: 1px solid black;
+    color: #fff;
+    border: 1px solid white;
     border-radius: 30px;
     margin: 0 10px;
     font-size: 20px;
