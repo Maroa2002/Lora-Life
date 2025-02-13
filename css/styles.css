@@ -2,6 +2,7 @@
 
 :root {
     --primary-color: #0095B7;
+    --primary-text-color: #fff;
 }
 
 /* Universal selector */
@@ -20,7 +21,6 @@ body {
 /* General Styles */
 a {
     text-decoration: none;
-    color: #333;
 }
 
 li {
@@ -45,7 +45,7 @@ header {
     height: 90vh;
     background: url(./../images/vet.jpg) center/cover no-repeat;
     text-align: center;
-    color: #fff;
+    color: var(--primary-text-color);
 }
 
 /* Adding an overlay for transparency */
@@ -67,28 +67,38 @@ header::before {
 
 /* Navbar Styling */
 .navbar {
+    position: fixed;
     height: 70px;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px 0;
+    z-index: 10;
 }
 
 .navbar .flex {
     justify-content: space-between ;
 }
 
-.navbar ul {
+.nav-links {
     display: flex;
+    gap: 20px;
 }
 
 .navbar a {
-    color: #333;
-    margin: 0 10px;
     padding: 10px;
-    color: #fff;
+    color: var(--primary-text-color);
+    font-weight: bold;
 }
 
-.navbar nav ul a:hover {
-    border-bottom: 2px #fff solid;
+.navbar a:hover {
+    border-bottom: 2px var(--primary-text-color) solid;
 }
 
+.auth-links {
+    margin-left: 15px;
+}
 
 /* hero-content */
 .hero {
