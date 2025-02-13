@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
 
+:root {
+    --primary-color: #0095B7;
+}
+
 /* Universal selector */
 * {
     margin: 0;
@@ -113,9 +117,51 @@ header::before {
     font-weight: bold;
 }
 
+.btn:hover {
+    background: var(--primary-color);
+}
+
 /* Cards */
+.cards {
+    position: relative;
+    margin-top: -40px;
+    z-index: 3;
+}
 .cards .flex {
     justify-content: space-between;
+}
+
+.card {
+    padding: 30px;
+    color: #fff;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.cards a {
+    color: #fff;
+}
+
+.cards p {
+    font-weight: bold;
+}
+
+.cards .card-1 {
+    background: #164753;
+}
+
+.cards .card-2 {
+    background: #0B6E85;
+}
+
+.cards .card-3 {
+    background: var(--primary-color);
 }
 
 /* Utility Classes */
