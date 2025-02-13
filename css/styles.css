@@ -144,6 +144,7 @@ header::before {
 }
 .cards .flex {
     justify-content: space-between;
+    gap: 30px;
 }
 
 .card {
@@ -196,7 +197,41 @@ header::before {
     font-weight: bold;
 }
 
+/* Services */
+.services {
+    background: var(--primary-color);
+    padding: 10px 0;
+}
+
+.services h1 {
+    font-weight: bold;
+    font-size: 40px;
+    color: var(--primary-text-color);
+    margin-bottom: 20px;
+}
+
+.services .service-card {
+    background: var(--primary-text-color);
+    color: var(--primary-color);
+    border-radius: 10px;
+    padding: 20px;
+    /* height: 400px; */
+    /* width: 300px; */
+}
+
+.service-card h2 {
+    color: #164753;
+    font-weight: bold;
+    font-size: 30px;
+}
+
 /* Utility Classes */
+
+.container {
+    max-width: 1100px;
+    padding: 0 40px;
+    margin: 0 auto;
+}
 
 .flex {
     display: flex;
@@ -205,8 +240,17 @@ header::before {
     height: 100%;
 }
 
-.container {
-    max-width: 1100px;
-    padding: 0 40px;
-    margin: 0 auto;
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* responsiveness */
+@media (max-width: 768px) {
+    .cards .flex{
+        flex-direction: column;
+    }
 }
