@@ -143,7 +143,6 @@ header::before {
     z-index: 3;
 }
 .cards .flex {
-    justify-content: space-between;
     gap: 30px;
 }
 
@@ -246,7 +245,6 @@ header::before {
 .contact-info {
     display: flex;
     justify-content: space-between;
-    justify-content: center;
     align-items: center;
     gap: 20px;
     margin-bottom: 30px;
@@ -335,6 +333,42 @@ header::before {
     background-color: #ffaa00;
 }
 
+/* Footer */
+.footer {
+    background: #0B6E85;
+    color: var(--primary-text-color);
+    padding: 2rem 0;
+}
+
+.footer h1 {
+    font-weight: bold;
+}
+
+.contact-details {
+    text-align: left;
+}
+
+.contact-details p {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+}
+
+.footer .flex {
+    flex-wrap: wrap;
+}
+
+.social a {
+    color: var(--primary-text-color);
+    margin: 0 10px;
+    transition: opacity 0.3s;
+}
+
+.social a:hover {
+    opacity: 0.7;
+}
+
 /* Utility Classes */
 
 .container {
@@ -345,9 +379,8 @@ header::before {
 
 .flex {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    /* height: 100%; */
 }
 
 .grid {
@@ -372,6 +405,15 @@ header::before {
 
     .contact-info {
         flex-direction: column;
+    }
+
+    .footer .flex {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .contact-details {
+        margin-bottom: 10px;
     }
 }
 
