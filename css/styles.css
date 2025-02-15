@@ -391,6 +391,21 @@ header::before {
 
 /* responsiveness */
 @media (max-width: 768px) {
+
+    .hero-links {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn {
+        padding: 5px;
+    }
+
+    .cards {
+        margin-top: 40px;
+    }
+
     .cards .flex{
         flex-direction: column;
     }
