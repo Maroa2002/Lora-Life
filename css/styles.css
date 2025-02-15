@@ -84,6 +84,7 @@ header::before {
 .nav-links {
     display: flex;
     gap: 20px;
+    justify-content: center;
 }
 
 .navbar a {
@@ -391,6 +392,37 @@ header::before {
 
 /* responsiveness */
 @media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+
+    .hamburger {
+        position: fixed;
+        top: 25px;
+        right: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        z-index: 100;
+        transition: all 0.3s ease;
+    }
+
+    .hamburger span {
+        width: 25px;
+        height: 3px;
+        background: var(--primary-text-color);
+    }
+
+    .nav-links.active {
+        display: flex;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 20px 0;
+    }
 
     .hero-links {
         display: flex;
