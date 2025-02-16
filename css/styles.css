@@ -355,6 +355,7 @@ header::before {
   align-items: center;
   gap: 0.5rem;
   margin: 0.5rem 0;
+  font-weight: bold;
 }
 
 .footer .flex {
