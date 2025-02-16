@@ -274,25 +274,32 @@ header::before {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
-  /* gap: 20px; */
+  align-items: stretch;
+  max-width: 800px;
+  margin: auto;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.contact-image {
+  flex: 1;
+  min-width: 250px;
+  max-width: 40%;
 }
 
 .contact-image img {
-  height: 505px;
   width: 100%;
-  max-width: 400px;
-  border-radius: 10px;
+  height: 100%;
+  object-fit: cover;
 }
 
 .contact-form {
+  flex: 1;
+  min-width: 300px;
   background: #0095b7;
   color: var(--primary-text-color);
   padding: 30px;
-  border-radius: 10px;
-  height: 500px;
-  width: 100%;
-  max-width: 600px;
 }
 
 .contact-form h3 {
@@ -466,6 +473,20 @@ header::before {
 
   .contact-info {
     flex-direction: column;
+  }
+
+  .contact-container {
+    flex-direction: column;
+  }
+
+  .contact-image {
+    max-width: 100%;
+  }
+
+  .contact-form {
+    margin-top: -10px;
+    max-width: 100%;
+    padding: 20px;
   }
 
   .footer .flex {
