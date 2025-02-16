@@ -141,7 +141,7 @@ header::before {
 .cards {
   position: relative;
   margin-top: -40px;
-  z-index: 3;
+  z-index: 1;
 }
 .cards .flex {
   gap: 30px;
