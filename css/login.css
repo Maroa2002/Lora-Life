@@ -1,0 +1,51 @@
+@import url("./styles.css");
+
+.login {
+    height: 100vh;
+    padding: 150px 20px;
+    background: url(./../images/vet-image.jpg) center/cover no-repeat;
+}
+
+.login-form {
+    max-width: 500px;
+    min-width: 300px;
+    background: #0095b7;
+    border-radius: 10px;
+    margin: 0 auto;
+    color: var(--primary-text-color);
+    padding: 30px;
+  }
+  
+  .login-form h3 {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  
+  .login-form label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .login-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: none;
+  }
+  
+  .login-form button {
+    width: 100%;
+    padding: 12px;
+    color: #164753;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .login-form button:hover {
+    background-color: #ffaa00;
+  }
