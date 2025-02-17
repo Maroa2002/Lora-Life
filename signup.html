@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="./css/signup.css" />
+    <title>LoraLife - Registration</title>
+  </head>
+  <body>
+    <div class="signup">
+      <div class="container">
+        <div class="signup-form">
+          <h1>Create Your Account</h1>
+          <form action="" method="">
+            <!-- Common fields to both the Farmers and Vets -->
+            <div class="two-column">
+              <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  placeholder="Full Name"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="email">Email *</label>
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  placeholder="example@gmail.com *"
+                  required
+                />
+              </div>
+            </div>
+            <div class="two-column">
+              <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  id="phone"
+                  placeholder="07..."
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="role">Role *:</label>
+                <select name="role" id="role">
+                  <option value="">Select Role</option>
+                  <option value="farmer">Farmer</option>
+                  <option value="vet">Veterinarian</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="two-column">
+              <div class="form-group">
+                <label for="password">Password *</label>
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="confirm_password">Confirm Password *</label>
+                <input
+                  type="password"
+                  name="confirm_password"
+                  id="confirm_password"
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Farmer Additional Fields -->
+            <div id="farmer-fields" class="additional-fields">
+              <h3>Farmer Details</h3>
+              <div class="form-group">
+                <label for="farmName"
+                  >Farm Name<span class="optional">(Optional)</span></label
+                >
+                <input type="text" name="farmName" id="farmName" />
+              </div>
+              <div class="form-group">
+                <label for="farmLocation">Farm Location</label>
+                <input type="text" name="farmLocation" id="farmLocation" />
+              </div>
+            </div>
+
+            <!-- Vet Additional Fields -->
+            <div class="additional-fields">
+              <h3>Veterinarian Details</h3>
+              <div class="two-column">
+                <div class="form-group">
+                  <label class="required">Specialization</label>
+                  <select required>
+                    <option value="">Select Specialization</option>
+                    <option>Cattle</option>
+                    <option>Poultry</option>
+                    <option>General Veterinary</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="required">Years of Experience</label>
+                  <input type="number" required />
+                </div>
+              </div>
+              <div class="two-column">
+                <div class="form-group">
+                  <label class="required">Verification Documents</label>
+                  <input type="file" required />
+                </div>
+                <div class="form-group">
+                  <label
+                    >Clinic/Hospital Name
+                    <span class="optional">(optional)</span></label
+                  >
+                  <input type="text" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="required">Service Area</label>
+                <textarea
+                  placeholder="Describe your service area"
+                  required
+                ></textarea>
+              </div>
+            </div>
+            <button type="submit">Create Account</button>
+          </form>
+          <p>Already have an account? <a href="login.html">Login</a></p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
