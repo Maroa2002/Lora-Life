@@ -1,11 +1,13 @@
 @import url("styles.css");
 
-body {
+.signup {
+    height: 100vh;
     padding: 20px;
     background: url(./../images/vet-image.jpg) center/cover no-repeat;
 }
 
-.signup .container {
+.signup-form {
+    margin: 0 auto;
     max-width: 800px;
     background: var(--primary-text-color);
     padding: 30px;
