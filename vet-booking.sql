@@ -34,7 +34,6 @@ CREATE TABLE IF NOT EXISTS vets (
     clinic_name VARCHAR(255) DEFAULT NULL,
     service_location TEXT NOT NULL,
     is_verified BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
