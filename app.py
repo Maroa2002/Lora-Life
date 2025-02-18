@@ -3,6 +3,7 @@ from models import db, User, Farmer, Vet
 from dotenv import load_dotenv
 import os
 from flask_migrate import Migrate
+from werkzeug.utils import secure_filename
 
 # load environment variables from .env
 load_dotenv()
@@ -14,10 +15,13 @@ db_user = os.getenv("MYSQL_USER", "root")
 db_password = os.getenv("MYSQL_PwD")
 db_name = os.getenv("MYSQL_DB")
 
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'}
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -85,6 +89,24 @@ def register():
                 )
                 new_user.farmer_profile = farmer
             elif user_role == 'vet':
+                # Handle file upload
+                if 'verification_documents' not in request.files:
+                    flash('No verification document uploaded', 'danger')
+                    return redirect(url_for('register'))
+                
+                file = request.files['verification_documents']
+                if file.filename == '':
+                    flash('No selected file', 'danger')
+                    return redirect(url_for('register'))
+                
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file.save(file_path)
+                else:
+                    flash('Invalid file type', 'danger')
+                    return redirect(url_for('register'))
+
                 vet = Vet(
                     specialization = request.form.get('specialization'),
                     years_experience = request.form.get('years_experience'),
@@ -108,6 +130,10 @@ def register():
     
     # GET request - show registration form 
     return render_template('register.html')
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 if __name__ == '__main__':
     app.run(debug=True)
