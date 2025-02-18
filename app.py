@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, flash
 from models import db, User, Farmer, Vet
 from dotenv import load_dotenv
 import os
@@ -34,9 +34,79 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/register')
+@app.route('/register', methods=['POST', 'GET'])
 def register():
+    if request.method == 'POST':
+        # Get common data
+        full_name = request.form.get('full_name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        user_role = request.form.get('role')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        # Basic validation
+        errors = []
+        if not all ([full_name, email, phone, user_role, password, confirm_password]):
+            errors.append('All required fields must be filled')
+        if password != confirm_password:
+            errors.append('Passwords do not match')
+        if user_role not in ['farmer', 'vet']:
+            errors.append('Invalid user role')
+            
+        if errors:
+            for error in errors:
+                flash(error, 'danger')
+            return redirect(url_for('register'))
+        
+        try:
+            # Check if user already exists
+            if User.query.filter_by(email=email).first():
+                flash('Email already registered', 'danger')
+                return redirect(url_for('register'))
+            if User.query.filter_by(phone=phone).first():
+                flash('Phone number already registered', 'danger')
+                return redirect(url_for('register'))
 
+            # Create new user
+            new_user = User(
+                full_name = full_name,
+                email = email,
+                phone = phone,
+                user_role = user_role
+            )
+            new_user.set_password(password)
+
+            # Handling form-specific data
+            if user_role == 'farmer':
+                farmer = Farmer(
+                    farm_name = request.form.get('farm_name'),
+                    farm_location = request.form.get('farm_location')
+                )
+                new_user.farmer_profile = farmer
+            elif user_role == 'vet':
+                vet = Vet(
+                    specialization = request.form.get('specialization'),
+                    years_experience = request.form.get('years_experience'),
+                    verification_document_path = request.form.get('verification_documents'),
+                    clinic_name = request.form.get('clinic_name'),
+                    service_area = request.form.get('service_area')
+                )
+                new_user.vet_profile = vet
+        
+            # save to database
+            db.session.add(new_user)
+            db.session.commit
+            
+            flash('Registration successful! Please login.', 'success')
+            return redirect(url_for('login'))
+        
+        except Exception as e:
+            db.session.rollback()
+            flash('Registration failed. Please try again.', 'danger')
+            return redirect(url_for('register'))
+    
+    # GET request - show registration form 
     return render_template('register.html')
 
 if __name__ == '__main__':
