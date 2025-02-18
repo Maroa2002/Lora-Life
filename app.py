@@ -14,6 +14,7 @@ db_host = os.getenv("MYSQL_HOST", "localhost")
 db_user = os.getenv("MYSQL_USER", "root")
 db_password = os.getenv("MYSQL_PwD")
 db_name = os.getenv("MYSQL_DB")
+app_secret_key = os.getenv('SECRET_KEY')
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'}
@@ -22,6 +23,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['SECRET_KEY'] = app_secret_key
 
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -110,7 +112,7 @@ def register():
                 vet = Vet(
                     specialization = request.form.get('specialization'),
                     years_experience = request.form.get('years_experience'),
-                    verification_document_path = request.form.get('verification_documents'),
+                    verification_document_path = file_path,
                     clinic_name = request.form.get('clinic_name'),
                     service_area = request.form.get('service_area')
                 )
