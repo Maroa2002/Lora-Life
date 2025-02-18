@@ -21,13 +21,10 @@
       <div class="container">
         <div class="signup-form">
           <h1>Create Your Account</h1>
-          {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-              {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
-              {% endfor %}
-            {% endif %}
-          {% endwith %}
+          {% with messages = get_flashed_messages(with_categories=true) %} {% if
+          messages %} {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %} {% endif %} {% endwith %}
           <form
             action="{{ url_for('register') }}"
             method="post"
@@ -109,19 +106,18 @@
             <div id="farmerFields" class="additional-fields">
               <h3>Farmer Details</h3>
               <div class="form-group">
-                <label for="farmName"
+                <label for="farm_name"
                   >Farm Name<span class="optional">(Optional)</span></label
                 >
-                <input type="text" name="farmName" id="farmName" />
+                <input type="text" name="farm_name" id="farm_name" />
               </div>
               <div class="form-group">
-                <label for="farmLocation">Farm Location *</label>
-                <input
-                  type="text"
-                  name="farmLocation"
-                  id="farmLocation"
-                  placeholder="Address"
-                />
+                <label for="farm_location">Farm Location *</label>
+                <textarea
+                  name="farm_location"
+                  placeholder="Farm Address"
+                  required
+                ></textarea>
               </div>
             </div>
 
@@ -146,7 +142,7 @@
               <div class="two-column">
                 <div class="form-group">
                   <label class="required">Verification Documents *</label>
-                  <input type="file" name="Verification_documents" required />
+                  <input type="file" name="verification_documents" required />
                 </div>
                 <div class="form-group">
                   <label
