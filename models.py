@@ -49,6 +49,7 @@ class Vet(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
     specialization = db.Column(db.String(255), nullable=False)
     years_experience = db.Column(db.Integer, nullable=False)
+    verification_document_path = db.Column(db.String(255), nullable=False)
     clinic_name = db.Column(db.String(255))
     service_area = db.Column(db.Text, nullable=False)
     is_verifed = db.Column(db.Boolean, default=False)
