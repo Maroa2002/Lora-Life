@@ -18,15 +18,15 @@
       <div class="container">
         <div class="signup-form">
           <h1>Create Your Account</h1>
-          <form action="" method="">
+          <form action="{{ url_for('register') }}" method="post">
             <!-- Common fields to both the Farmers and Vets -->
             <div class="two-column">
               <div class="form-group">
                 <label for="name">Full Name *</label>
                 <input
                   type="text"
-                  name="name"
-                  id="name"
+                  name="full_name"
+                  id="full_name"
                   placeholder="Full Name"
                   required
                 />
@@ -114,14 +114,14 @@
                   <label class="required">Specialization *</label>
                   <select required>
                     <option value="">Select Specialization</option>
-                    <option>Cattle</option>
-                    <option>Poultry</option>
-                    <option>General Veterinary</option>
+                    <option value="cattle">Cattle</option>
+                    <option value="poultry">Poultry</option>
+                    <option value="general_vet">General Veterinary</option>
                   </select>
                 </div>
                 <div class="form-group">
                   <label class="required">Years of Experience *</label>
-                  <input type="number" required />
+                  <input name="number" type="number" required />
                 </div>
               </div>
               <div class="two-column">
