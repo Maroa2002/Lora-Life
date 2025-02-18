@@ -112,7 +112,7 @@
               <div class="two-column">
                 <div class="form-group">
                   <label class="required">Specialization *</label>
-                  <select required>
+                  <select name="specialization" required>
                     <option value="">Select Specialization</option>
                     <option value="cattle">Cattle</option>
                     <option value="poultry">Poultry</option>
@@ -121,20 +121,20 @@
                 </div>
                 <div class="form-group">
                   <label class="required">Years of Experience *</label>
-                  <input name="number" type="number" required />
+                  <input name="years_experience" type="number" required />
                 </div>
               </div>
               <div class="two-column">
                 <div class="form-group">
                   <label class="required">Verification Documents *</label>
-                  <input type="file" required />
+                  <input type="file" name="Verification_documents" required />
                 </div>
                 <div class="form-group">
                   <label
                     >Clinic/Hospital Name
                     <span class="optional">(optional)</span></label
                   >
-                  <input type="text" />
+                  <input type="text" name="clinic_name" />
                 </div>
               </div>
 
@@ -142,6 +142,7 @@
                 <label class="required">Service Area *</label>
                 <textarea
                   placeholder="Describe your service area"
+                  name="service_area"
                   required
                 ></textarea>
               </div>
