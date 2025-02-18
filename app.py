@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from models import db, User, Farmer, Vet
 from dotenv import load_dotenv
 import os
@@ -28,14 +29,50 @@ app.config['SECRET_KEY'] = app_secret_key
 db.init_app(app)
 migrate = Migrate(app, db)
 
+# Initialize the Login Manager
+login_manager = LoginManager()
+login_manager.login_view = 'login'
+login_manager.init_app(app)
+
+# loader for Flask_Login
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 @app.route('/')
 def home():
 
     return render_template('index.html')
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        # Basic validation
+        if not email or not password:
+            flash('Please fill in all fields', 'danger')
+            return redirect(url_for('login'))
+        
+        user = User.query.filter_by(email=email).first()
+        
+        # check if the user exists and the password is correct
+        if not user or not user.check_password(password):
+            flash('Invalid email or password', 'danger')
+            return redirect(url_for('login'))
+        
+        # login the user
+        login_user(user)
+        flash('Login successful!', 'success')
+        
+        # redirect based on role
+        if user.user_role == 'farmer':
+            return redirect(url_for('farmer_dashboard'))
+        elif user.user_role == 'vet':
+            return redirect(url_for('vet_dashboard'))
+            
 
     return render_template('login.html')
 
@@ -43,6 +80,7 @@ def login():
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
+        print(request.form)
         # Get common data
         full_name = request.form.get('full_name')
         email = request.form.get('email')
@@ -120,7 +158,7 @@ def register():
         
             # save to database
             db.session.add(new_user)
-            db.session.commit
+            db.session.commit()
             
             flash('Registration successful! Please login.', 'success')
             return redirect(url_for('login'))
