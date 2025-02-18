@@ -36,7 +36,7 @@ class Farmer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
     farm_name = db.Column(db.String(255))
-    farm_location = db.Column(db.Text)
+    farm_location = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
         return f'<Farmer {self.farm_name}>'
