@@ -30,8 +30,8 @@
             </ul>
             <!-- Login and signup -->
             <div class="auth-links">
-              <a href="login.html">Log in</a>
-              <a href="register.html">Become a member</a>
+              <a href="{{ url_for('login') }}">Log in</a>
+              <a href="{{ url_for('register') }}">Become a member</a>
             </div>
           </div>
 
@@ -170,7 +170,10 @@
         </div>
         <div class="contact-container">
           <div class="contact-image">
-            <img src="./../static/images/cow-image.jpeg" alt="Livestock Health" />
+            <img
+              src="./../static/images/cow-image.jpeg"
+              alt="Livestock Health"
+            />
           </div>
           <div class="contact-form">
             <h3>Contact Us</h3>
