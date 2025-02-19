@@ -173,6 +173,17 @@ def register():
     return render_template('register.html')
 
 
+# Farmer - View Available vets
+@app.route('/vets', methods=['GET'])
+@login_required
+def list_vets():
+    if current_user.user_role != 'farmer':
+        abort(403)
+
+    vets = Vet.query.all()
+    return render_template('list_vets.html', vets=vets)
+
+
 # Vet - Manage Availability
 @app.route('/vet/availability', methods=['GET', 'POST'])
 @login_required
