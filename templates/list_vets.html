@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vet Listings</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+      .vet {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+      }
+      .vet:last-child {
+        border-bottom: none;
+      }
+      .vet-info {
+        flex-grow: 1;
+      }
+      .vet-info h3 {
+        margin: 0;
+        color: #444;
+      }
+      .vet-info p {
+        margin: 5px 0;
+        color: #777;
+      }
+      .btn {
+        padding: 8px 12px;
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .btn:hover {
+        background: #218838;
+      }
+      @media (max-width: 600px) {
+        .vet {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .btn {
+          width: 100%;
+          margin-top: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Available Veterinarians</h2>
+      {% for vet in vets %}
+        <div class="vet">
+            <div class="vet-info">
+            <h3>Dr. {{ vet.full_name }}</h3>
+            <p>Specialization: {{ vet.specialization }}</p>
+            </div>
+            <button class="btn">View Availability</button>
+        </div>
+      {% endfor %}
+    </div>
+  </body>
+</html>
