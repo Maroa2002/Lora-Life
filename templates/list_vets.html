@@ -12,6 +12,9 @@
         box-sizing: border-box;
         background-color: #f4f4f4;
       }
+      a {
+        text-decoration: none;
+      }
       .container {
         max-width: 800px;
         margin: 20px auto;
@@ -75,10 +78,10 @@
       {% for vet in vets %}
         <div class="vet">
             <div class="vet-info">
-            <h3>Dr. {{ vet.full_name }}</h3>
+            <h3>Dr. {{ vet.user.full_name }}</h3>
             <p>Specialization: {{ vet.specialization }}</p>
             </div>
-            <button class="btn">View Availability</button>
+            <a href="{{ url_for('vet_availability', vet_id=vet.id) }}" class="btn">View Availability</a>
         </div>
       {% endfor %}
     </div>
