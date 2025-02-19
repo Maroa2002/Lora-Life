@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from models import db, User, Farmer, Vet
+from models import db, User, Farmer, Vet, VetAvailability, Appointment
 from dotenv import load_dotenv
 import os
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
+from datetime import datetime
 
 # load environment variables from .env
 load_dotenv()
@@ -69,9 +70,9 @@ def login():
         
         # redirect based on role
         if user.user_role == 'farmer':
-            return redirect(url_for('farmer_dashboard'))
+            return redirect(url_for('home'))
         elif user.user_role == 'vet':
-            return redirect(url_for('vet_dashboard'))
+            return redirect(url_for('home'))
             
 
     return render_template('login.html')
@@ -170,6 +171,55 @@ def register():
     
     # GET request - show registration form 
     return render_template('register.html')
+
+
+# Vet - Manage Availability
+@app.route('/vet/availability', methods=['GET', 'POST'])
+@login_required
+def manage_availability():
+    if current_user.user_role != 'vet':
+        abort(403)
+        
+    if request.method == 'POST':
+        try:
+            start_time = datetime.fromisoformat(request.form.get['start_time'])
+            end_time = datetime.fromisoformat(request.form.get['end_time'])
+            
+            if start_time >= end_time:
+                flash('End time must be after start time', 'danger')
+                return redirect(url_for('manage_availability'))
+            
+            # check for overlapping slots
+            overlapping = VetAvailability.query.filter(
+                VetAvailability.vet_id == current_user.id,
+                VetAvailability.start_time < end_time,
+                VetAvailability.end_time > start_time
+            ).first()
+            
+            if overlapping:
+                flash('Time slot overlaps with existing availability', 'danger')
+                return redirect(url_for('manage_availability'))
+            
+            new_slot = VetAvailability(
+                vet_id=current_user.id,
+                start_time=start_time,
+                end_time=end_time
+            )
+            
+            db.session.add(new_slot)
+            db.session.commit()
+            flash('Availability slot added successfully', 'success')
+            
+        except ValueError:
+            flash('Invalid date/time format', 'danger')
+            
+        return redirect(url_for('manage_availability'))
+    
+    # Get request - show existing slots
+    slots = VetAvailability.query.filter_by(vet_id=current_user.id)\
+            .order_by(VetAvailability.start_time.asc()).all()
+    return render_template('vet_availability.html', slots=slots)
+
 
 @app.route('/logout')
 @login_required
