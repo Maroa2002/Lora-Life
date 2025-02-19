@@ -189,7 +189,13 @@ def list_vets():
 @login_required
 def vet_availability(vet_id):
     vet = Vet.query.get_or_404(vet_id)
-    availability_slots = VetAvailability.query.filter_by(vet_id=vet.user_id, is_booked=False).all()
+    
+    # Get availables slots in the future
+    availability_slots = VetAvailability.query.filter(
+        VetAvailability.vet_id == vet.user_id,
+        VetAvailability.start_time > datetime.utcnow(),
+        VetAvailability.is_booked == False
+        ).order_by(VetAvailability.start_time.asc()).all()
     
     return render_template('vet_availability.html', vet=vet, availability_slots=availability_slots)
 
