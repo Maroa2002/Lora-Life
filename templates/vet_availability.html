@@ -73,7 +73,7 @@
                 {{ slot.start_time.strftime('%Y-%m-%d %H:%M') }} -
                 {{ slot.end_time.strftime('%H:%M') }}
             </div>
-            <form action="" method="post">
+            <form action="{{ url_for('book appointment', slot_id=slot.id) }}" method="post">
                 <textarea name="notes" placeholder="Add notes (optional)"></textarea>
                 <button type="submit">Book Appointment</button>
             </form>

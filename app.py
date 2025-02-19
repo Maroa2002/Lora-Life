@@ -200,6 +200,37 @@ def vet_availability(vet_id):
     return render_template('vet_availability.html', vet=vet, availability_slots=availability_slots)
 
 
+# Farmer - Book an appointment
+@app.route('/book_appointment/<int:slot_id>', methods=['POST'])
+@login_required
+def book_appointment(slot_id):
+    if current_user.user_role != 'farmer':
+        abort(403)
+        
+    slot = VetAvailability.query.get_or_404(slot_id)
+    
+    if slot.is_booked:
+        flash('This slot is already booked', 'danger')
+        return redirect(url_for('vet_availability'))
+    
+    if slot.start_time < datetime.utcnow():
+        flash('Cannot book past availability slots', 'danger')
+        return redirect(url_for('vet_availability'))
+    
+    appointment = Appointment(
+        farmer_id=current_user.id,
+        vet_id=slot.vet_id,
+        slot_id=slot.id,
+        notes=request.form.get('notes', '')
+    )
+    
+    slot.is_booked = True
+    db.session.add(appointment)
+    db.session.commit()
+    
+    flash('Appointment booked successfully', 'success')
+    return redirect(url_for('home'))
+
 # Vet - Manage Availability
 @app.route('/vet/add_availability', methods=['GET', 'POST'])
 @login_required
