@@ -184,21 +184,31 @@ def list_vets():
     return render_template('list_vets.html', vets=vets)
 
 
-# Vet - Manage Availability
-@app.route('/vet/availability', methods=['GET', 'POST'])
+# Farmer - view vet availabilty slots
+@app.route('/vet/<int:vet_id>/availability', methods=['GET'])
 @login_required
-def manage_availability():
+def vet_availability(vet_id):
+    vet = Vet.query.get_or_404(vet_id)
+    availability_slots = VetAvailability.query.filter_by(vet_id=vet.user_id, is_booked=False).all()
+    
+    return render_template('vet_availability.html', vet=vet, availability_slots=availability_slots)
+
+
+# Vet - Manage Availability
+@app.route('/vet/add_availability', methods=['GET', 'POST'])
+@login_required
+def add_availability():
     if current_user.user_role != 'vet':
         abort(403)
         
     if request.method == 'POST':
         try:
-            start_time = datetime.fromisoformat(request.form.get['start_time'])
-            end_time = datetime.fromisoformat(request.form.get['end_time'])
+            start_time = datetime.fromisoformat(request.form.get('start_time'))
+            end_time = datetime.fromisoformat(request.form.get('end_time'))
             
             if start_time >= end_time:
                 flash('End time must be after start time', 'danger')
-                return redirect(url_for('manage_availability'))
+                return redirect(url_for('add_availability'))
             
             # check for overlapping slots
             overlapping = VetAvailability.query.filter(
@@ -209,12 +219,13 @@ def manage_availability():
             
             if overlapping:
                 flash('Time slot overlaps with existing availability', 'danger')
-                return redirect(url_for('manage_availability'))
+                return redirect(url_for('add_availability'))
             
             new_slot = VetAvailability(
                 vet_id=current_user.id,
                 start_time=start_time,
-                end_time=end_time
+                end_time=end_time,
+                is_booked=False
             )
             
             db.session.add(new_slot)
@@ -224,12 +235,12 @@ def manage_availability():
         except ValueError:
             flash('Invalid date/time format', 'danger')
             
-        return redirect(url_for('manage_availability'))
+        return redirect(url_for('add_availability'))
     
     # Get request - show existing slots
     slots = VetAvailability.query.filter_by(vet_id=current_user.id)\
             .order_by(VetAvailability.start_time.asc()).all()
-    return render_template('vet_availability.html', slots=slots)
+    return render_template('add_availability.html', slots=slots)
 
 
 @app.route('/logout')
