@@ -53,8 +53,40 @@ class Vet(db.Model):
     verification_document_path = db.Column(db.String(255), nullable=False)
     clinic_name = db.Column(db.String(255))
     service_area = db.Column(db.Text, nullable=False)
-    is_verifed = db.Column(db.Boolean, default=False)
+    is_verified = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f'<Vet {self.specialization}>'
     
+class VetAvailability(db.Model):
+    __tablename__ = 'vet_availability'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    vet_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False)
+    end_time = db.Column(db.DateTime, nullable=False)
+    is_booked = db.Column(db.Boolean, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    vet = db.relationship('User', backref='availability_slots')
+    
+    def __repr__(self):
+        return f'<Availability {self.start_time} to {self.end_time}>'
+    
+class Appointment(db.Model):
+    __tablename__ = 'appointments'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    farmer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    vet_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    slot_id = db.Column(db.Integer, db.ForeignKey('vet_availability.id'), nullable=False)
+    notes = db.Column(db.Text)
+    status = db.Column(db.Enum('pending', 'confirmed', 'completed', 'cancelled'), default='pending', nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    farmer = db.relationship('User', foreign_keys=[farmer_id], backref='farmer_appointments')
+    vet = db.relationship('User', foreign_keys=[vet_id], backref='vet_appointments')
+    slot = db.relationship('VetAvailability', backref='appointment')
+    
+    def __repr__(self):
+        return f'<Appointment {self.id} - {self.status}>'
