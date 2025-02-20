@@ -298,6 +298,19 @@ def delete_availability(slot_id):
     return redirect(url_for('manage_availability'))
 
 
+# Vet - View Appointments
+@app.route('/vet/appointments', methods=['GET'])
+@login_required
+def view_appointments():
+    if current_user.user_role != 'vet':
+        abort(403)
+        
+    appointments = Appointment.query.filter(
+        Appointment.vet_id == current_user.id
+    ).all()
+    return render_template('vet_appointments.html', appointments=appointments)
+
+
 @app.route('/logout')
 @login_required
 def logout():
