@@ -311,13 +311,36 @@ def view_appointments():
     return render_template('vet_appointments.html', appointments=appointments)
 
 
+
+# Vet - manage appointments
+@app.route('/vet/appointment/<int:appointment_id>/<action>', methods=['POST'])
+@login_required
+def manage_appointment(appointment_id, action):
+    if current_user.user_role != 'vet':
+        abort(403)
+        
+    appointment = Appointment.query.get_or_404(appointment_id)
+    
+    if action == 'confirm':
+        appointment.status = 'confirmed'
+        flash('Appointment confirmed', 'success')
+    elif action == 'cancel':
+        appointment.status = 'cancelled'
+        appointment.availability.is_booked = False
+        flash('Appointment cancelled', 'danger')
+    else:
+        flash('Invalid action', 'danger')
+    
+    db.session.commit()
+    return redirect(url_for('view_appointments'))
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     flash('You have been logged out', 'success')
     return redirect(url_for('login'))
-    
+
 
 def allowed_file(filename):
     return '.' in filename and \
