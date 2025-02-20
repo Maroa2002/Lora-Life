@@ -231,6 +231,20 @@ def book_appointment(slot_id):
     flash('Appointment booked successfully', 'success')
     return redirect(url_for('home'))
 
+
+# Farmer - view appointments
+@app.route('/farmer/appointments')
+@login_required
+def farmer_appointments():
+    if current_user.user_role != 'farmer':
+        abort(403)
+        
+    appointments = Appointment.query.filter_by(farmer_id=current_user.id)\
+        .order_by(Appointment.created_at.desc()).all()
+    
+    return render_template('farmer_appointments.html', appointments=appointments)
+
+
 # Vet - Manage Availability
 @app.route('/vet/manage_availability', methods=['GET', 'POST'])
 @login_required
@@ -333,6 +347,7 @@ def manage_appointment(appointment_id, action):
     
     db.session.commit()
     return redirect(url_for('view_appointments'))
+
 
 @app.route('/logout')
 @login_required
