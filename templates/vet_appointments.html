@@ -71,7 +71,7 @@
         <ul>
             {% for appointment in appointments %}
                 <li>
-                    Appointment with <strong>{{ appointment.farmer.full_name }}</strong><br>
+                    Appointment with <strong>{{ appointment.farmer.full_name }}</strong><br>  
                     Status: {{ appointment.status }}<br>
                     {% if appointment.status == 'pending' %}
                         <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='confirm') }}" method="post">
