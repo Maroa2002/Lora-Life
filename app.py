@@ -280,6 +280,24 @@ def manage_availability():
     return render_template('manage_availability.html', slots=slots)
 
 
+# Vet - Delete availability slot
+@app.route('/vet/manage_availability/<int:slot_id>/delete', methods=['POST'])
+@login_required
+def delete_availability(slot_id):
+    slot = VetAvailability.query.get_or_404(slot_id)
+    if slot.vet_id != current_user.id:
+        abort(403)
+    
+    if slot.is_booked:
+        flash('Cannot delete a booked slot', 'danger')
+    else:
+        db.session.delete(slot)
+        db.session.commit()
+        flash('Slot deleted successfully', 'success')
+    
+    return redirect(url_for('manage_availability'))
+
+
 @app.route('/logout')
 @login_required
 def logout():
