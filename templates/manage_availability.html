@@ -19,7 +19,7 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
       }
-      h2 {
+      h2, h3 {
         text-align: center;
         color: #333;
       }
@@ -50,6 +50,34 @@
       button:hover {
         background: #218838;
       }
+      .slots-list {
+        margin-top: 20px;
+      }
+      .slot {
+        padding: 10px;
+        margin-bottom: 10px;
+        background: #e9ecef;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: bold;
+        position: relative;
+      }
+      .booked {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .btn-danger {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      .btn-danger:hover {
+        background: #c82333;
+      }
       @media (max-width: 600px) {
         .container {
           width: 90%;
@@ -60,7 +88,7 @@
   <body>
     <div class="container">
       <h2>Add Availability</h2>
-      <form method="POST" action="{{ url_for('add_availability') }}">
+      <form method="POST" action="{{ url_for('manage_availability') }}">
         <div class="form-group">
           <label>Start Time (YYYY-MM-DD HH:MM)</label>
           <input type="datetime-local" name="start_time" required />
@@ -71,6 +99,21 @@
         </div>
         <button type="submit">Add Slot</button>
       </form>
+
+      <h3>Your Availability Slots</h3>
+      <div class="slots-list">
+        {% for slot in slots %}
+          <div class="slot {% if slot.is_booked %} booked {% endif %} ">
+            {{ slot.start_time.strftime('%Y-%m-%d %H:%M') }} to
+            {{ slot.end_time.strftime('%H:%M') }}
+            {% if not slot.is_booked %}
+              <form action="" method="post">
+                <button type="submit" class="btn-danger">Delete</button>
+              </form>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
     </div>
   </body>
 </html>
