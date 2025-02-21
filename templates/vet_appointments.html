@@ -73,6 +73,10 @@
                 <li>
                     Appointment with <strong>{{ appointment.farmer.full_name }}</strong><br>  
                     Status: {{ appointment.status }}<br>
+                    Date: {{ appointment.slot.start_time.strftime('%Y-%m-%d') }}<br>
+                    Time: {{ appointment.slot.start_time.strftime('%H:%M') }} to {{ appointment.slot.end_time.strftime('%H:%M') }}<br>
+                    Phone: {{ appointment.farmer.phone }}<br>
+                    Email: {{ appointment.farmer.email }}<br>
                     {% if appointment.status == 'pending' %}
                         <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='confirm') }}" method="post">
                             <button type="submit" class="confirm">Confirm</button>
