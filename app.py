@@ -6,6 +6,7 @@ import os
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 from datetime import datetime
+from twilio.rest import Client
 
 # load environment variables from .env
 load_dotenv()
@@ -17,6 +18,15 @@ db_user = os.getenv("MYSQL_USER", "root")
 db_password = os.getenv("MYSQL_PwD")
 db_name = os.getenv("MYSQL_DB")
 app_secret_key = os.getenv('SECRET_KEY')
+
+# Fetch twilio credentials from env variables
+twilio_sid = os.getenv("TWILIO_ACCOUNT_SID")
+twilio_auth_token = os.getenv("TWILIO_AUTH_TOKEN")
+twilio_phone = os.getenv("TWILIO_PHONE_NUMBER")
+
+# Create twilio cllent
+client = Client(twilio_sid, twilio_auth_token)
+
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'}
@@ -42,12 +52,19 @@ def load_user(user_id):
 
 @app.route('/')
 def home():
-
+    """
+    Route to render the home page.
+    """
     return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Route to handle user login.
+    GET: Renders the login form.
+    POST: Processes the login form and logs in the user.
+    """
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -80,6 +97,11 @@ def login():
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
+    """
+    Route to handle user registration.
+    GET: Renders the registration form.
+    POST: Processes the registration form and registers the user.
+    """
     if request.method == 'POST':
         print(request.form)
         # Get common data
@@ -177,6 +199,9 @@ def register():
 @app.route('/vets', methods=['GET'])
 @login_required
 def list_vets():
+    """
+    Route for farmers to view available vets.
+    """
     if current_user.user_role != 'farmer':
         abort(403)
 
@@ -188,6 +213,9 @@ def list_vets():
 @app.route('/vet/<int:vet_id>/availability', methods=['GET'])
 @login_required
 def vet_availability(vet_id):
+    """
+    Route for farmers to view a vet's availability slots.
+    """
     vet = Vet.query.get_or_404(vet_id)
     
     # Get availables slots in the future
@@ -204,6 +232,9 @@ def vet_availability(vet_id):
 @app.route('/book_appointment/<int:slot_id>', methods=['POST'])
 @login_required
 def book_appointment(slot_id):
+    """
+    Route for farmers to book an appointment with a vet.
+    """
     if current_user.user_role != 'farmer':
         abort(403)
         
@@ -228,6 +259,13 @@ def book_appointment(slot_id):
     db.session.add(appointment)
     db.session.commit()
     
+    # # Notify vet booking
+    # message = client.messages.create(
+    #     body="Your slot has been booked",
+    #     from_=twilio_phone,
+    #     to="+254791332603"
+    # )
+    
     flash('Appointment booked successfully', 'success')
     return redirect(url_for('home'))
 
@@ -236,6 +274,9 @@ def book_appointment(slot_id):
 @app.route('/farmer/appointments')
 @login_required
 def farmer_appointments():
+    """
+    Route for farmers to view their appointments.
+    """
     if current_user.user_role != 'farmer':
         abort(403)
         
@@ -249,6 +290,11 @@ def farmer_appointments():
 @app.route('/vet/manage_availability', methods=['GET', 'POST'])
 @login_required
 def manage_availability():
+    """
+    Route for vets to manage their availability slots.
+    GET: Renders the form to add availability slots and shows existing slots.
+    POST: Processes the form to add a new availability slot.
+    """
     if current_user.user_role != 'vet':
         abort(403)
         
@@ -298,6 +344,9 @@ def manage_availability():
 @app.route('/vet/manage_availability/<int:slot_id>/delete', methods=['POST'])
 @login_required
 def delete_availability(slot_id):
+    """
+    Route for vets to delete an availability slot.
+    """
     slot = VetAvailability.query.get_or_404(slot_id)
     if slot.vet_id != current_user.id:
         abort(403)
@@ -316,6 +365,9 @@ def delete_availability(slot_id):
 @app.route('/vet/appointments', methods=['GET'])
 @login_required
 def view_appointments():
+    """
+    Route for vets to view their appointments.
+    """
     if current_user.user_role != 'vet':
         abort(403)
         
@@ -330,6 +382,9 @@ def view_appointments():
 @app.route('/vet/appointment/<int:appointment_id>/<action>', methods=['POST'])
 @login_required
 def manage_appointment(appointment_id, action):
+    """
+    Route for vets to manage appointments.
+    """
     if current_user.user_role != 'vet':
         abort(403)
         
@@ -352,12 +407,18 @@ def manage_appointment(appointment_id, action):
 @app.route('/logout')
 @login_required
 def logout():
+    """
+    Route to log out the current user.
+    """
     logout_user()
     flash('You have been logged out', 'success')
     return redirect(url_for('login'))
 
 
 def allowed_file(filename):
+    """
+    Helper function to check if a file is allowed based on its extension.
+    """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
