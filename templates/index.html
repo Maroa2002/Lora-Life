@@ -30,8 +30,12 @@
             </ul>
             <!-- Login and signup -->
             <div class="auth-links">
+              {% if current_user.is_authenticated %}
+              <a href="{{ url_for('logout') }}">Log Out</a>
+              {% else %}
               <a href="{{ url_for('login') }}">Log in</a>
               <a href="{{ url_for('register') }}">Become a member</a>
+              {% endif %}
             </div>
           </div>
 
