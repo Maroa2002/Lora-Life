@@ -87,9 +87,9 @@ def login():
         
         # redirect based on role
         if user.user_role == 'farmer':
-            return redirect(url_for('home'))
+            return redirect(url_for('farmer_appointments'))
         elif user.user_role == 'vet':
-            return redirect(url_for('home'))
+            return redirect(url_for('vet_appointments'))
             
 
     return render_template('login.html')
@@ -103,7 +103,6 @@ def register():
     POST: Processes the registration form and registers the user.
     """
     if request.method == 'POST':
-        print(request.form)
         # Get common data
         full_name = request.form.get('full_name')
         email = request.form.get('email')
