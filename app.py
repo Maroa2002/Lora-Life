@@ -89,7 +89,7 @@ def login():
         if user.user_role == 'farmer':
             return redirect(url_for('farmer_appointments'))
         elif user.user_role == 'vet':
-            return redirect(url_for('vet_appointments'))
+            return redirect(url_for('view_appointments'))
             
 
     return render_template('login.html')
@@ -195,9 +195,9 @@ def register():
 
 
 # Farmer - View Available vets
-@app.route('/vets', methods=['GET'])
+@app.route('/find-vets', methods=['GET'])
 @login_required
-def list_vets():
+def find_vets():
     """
     Route for farmers to view available vets.
     """
@@ -205,7 +205,7 @@ def list_vets():
         abort(403)
 
     vets = Vet.query.all()
-    return render_template('list_vets.html', vets=vets)
+    return render_template('find_vets.html', vets=vets)
 
 
 # Farmer - view vet availabilty slots
