@@ -128,13 +128,13 @@
             </p>
           </div>
           <div class="info-img">
-            <img src="./images/world-image.jpg" alt="" />
+            <img src="{{ url_for('static', filename='images/world-image.jpg') }}" alt="" />
           </div>
         </div>
         <div class="contact-container">
           <div class="contact-image">
             <img
-              src="./../static/images/cow-image.jpeg"
+              src="{{ url_for('static', filename='images/cow-image.jpeg') }}"
               alt="Livestock Health"
             />
           </div>
