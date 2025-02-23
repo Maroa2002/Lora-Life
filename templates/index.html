@@ -1,69 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
-    <title>Lora Life</title>
-  </head>
-  <body>
-    <header>
-      <div class="header-content">
-        <!-- Navbar -->
-        <nav class="navbar">
-          <div class="container flex">
-            <!-- Logo -->
-            <h1 class="logo">LORA LIFE</h1>
-            <!-- center links -->
-            <ul class="nav-links">
-              <li><a href="#Home">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#services">Services</a></li>
-              <li><a href="#contact">Contact</a></li>
-            </ul>
-            <!-- Login and signup -->
-            <div class="auth-links">
-              {% if current_user.is_authenticated %}
-              <a href="{{ url_for('logout') }}">Log Out</a>
-              {% else %}
-              <a href="{{ url_for('login') }}">Log in</a>
-              <a href="{{ url_for('register') }}">Become a member</a>
-              {% endif %}
-            </div>
-          </div>
+{% extends 'base.html' %}
 
-          <!-- Mobile Hamburger -->
-          <div class="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
+{% block title %} Home {% endblock %}
+{% block content %}
+    <!-- Hero section -->
+      <section class="hero">
+        <div class="container">
+          <h1>
+            Transforming Livestock <br />
+            Health With Smart <br />
+            Monitoring
+          </h1>
+          <p>Track | Diagnose | Optimize</p>
+          <div class="hero-links">
+            <a href="{{ url_for('register') }}" class="btn">Join Us</a>
+            <a href="#about" class="btn">Learn More</a>
           </div>
-        </nav>
-      </div>
-    </header>
-
-     <!-- Hero section -->
-        <section class="hero">
-          <div class="container">
-            <h1>
-              Transforming Livestock <br />
-              Health With Smart <br />
-              Monitoring
-            </h1>
-            <p>Track | Diagnose | Optimize</p>
-            <div class="hero-links">
-              <a href="{{ url_for('register') }}" class="btn">Join Us</a>
-              <a href="#about" class="btn">Learn More</a>
-            </div>
-          </div>
-        </section>
+        </div>
+      </section>
 
     <section class="cards">
       <div class="container flex">
@@ -216,26 +169,4 @@
       </div>
     </section>
 
-    <!-- footer -->
-    <footer class="footer">
-      <div class="container flex">
-        <div class="brand">
-          <h1>Lora Life</h1>
-          <p>Copyright &copy; 2025</p>
-        </div>
-        <div class="contact-details">
-          <p><i class="fas fa-phone"></i>+254 740830422</p>
-          <p><i class="fas fa-map-marker-alt"></i>Juja Nairobi</p>
-          <p><i class="fas fa-envelope"></i>info@loralife@gmail.com</p>
-        </div>
-        <div class="social">
-          <a href="#"><i class="fab fa-facebook fa-2x"></i></a>
-          <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
-          <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
-        </div>
-      </div>
-    </footer>
-
-    <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
-  </body>
-</html>
+{% endblock %}
