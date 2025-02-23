@@ -1,0 +1,171 @@
+body {
+    font-family: 'Sans-serif', Arial;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    background-color: #164753;
+    color: white;
+    width: 250px;
+    padding: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+nav ul li {
+    padding: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+}
+
+nav ul li.active, nav ul li:hover {
+    background-color: white;
+    color: #164753;
+    font-weight: bold;
+}
+
+.profile {
+    margin-top: auto;
+    text-align: left;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 10px;
+}
+
+.profile img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.logout {
+    background-color: white;
+    color: #E74C3C;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    text-align: center;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 20px;
+    background-color: #0095B7;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 250px;
+}
+
+.search input {
+    background: transparent;
+    border: none;
+    color: white;
+    outline: none;
+    flex: 1;
+}
+
+.search i {
+    color: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #164753;
+    color: white;
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    border: 1px solid;
+}
+
+.status.open { 
+    border-color: #0095B7;
+    color: #0095B7;
+    background: transparent;
+}
+
+.status.pending { 
+    border-color: #F1C40F;
+    color: #F1C40F;
+    background: transparent;
+}
+
+.status.completed { 
+    border-color: #E74C3C;
+    color: #E74C3C;
+    background: transparent;
+}
+
+td button {
+    border: 1px solid #aaa;
+    background: transparent;
+    color: #555;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+td button:hover {
+    background: #ddd;
+}

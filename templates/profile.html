@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/profile.css') }}"
+    />
+    <script
+      defer
+      src="{{ url_for('static', filename='scripts/profile.js') }}"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <h2 class="logo">LORA LIFE</h2>
+        <nav>
+          <ul>
+            <li class="active">
+              <i class="fas fa-calendar-check"></i> Manage Appointment
+            </li>
+            <li><i class="fas fa-list"></i> Appointment List</li>
+          </ul>
+        </nav>
+        <div class="profile">
+          <img src="images/me.PNG" alt="Profile Pic" />
+          <div class="profile-info">
+            <p>Vet Rachael</p>
+            <p>vet@lora.com</p>
+          </div>
+        </div>
+        <button class="logout">Log out</button>
+      </aside>
+
+      <main class="content">
+        <header>
+          <h2>Manage Appointments</h2>
+          <div class="search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search" />
+          </div>
+        </header>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Full Name</th>
+              <th>Phone Number</th>
+              <th>Appointment Date & Time</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Zane Cooper</td>
+              <td>+1 9876543210</td>
+              <td>13-Aug-2025 10:00 AM</td>
+              <td><span class="status open">Open</span></td>
+              <td>
+                <button class="edit"><i class="fas fa-edit"></i></button
+                ><button class="delete"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>Brooke Warren</td>
+              <td>+1 8765432109</td>
+              <td>13-Aug-2025 11:00 AM</td>
+              <td><span class="status pending">Pending</span></td>
+              <td>
+                <button class="edit"><i class="fas fa-edit"></i></button
+                ><button class="delete"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>George Matiko</td>
+              <td>0740830422</td>
+              <td>14-Aug-2025 09:00 AM</td>
+              <td><span class="status open">Open</span></td>
+              <td>
+                <button class="edit"><i class="fas fa-edit"></i></button
+                ><button class="delete"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>Rachael Marrion</td>
+              <td>0795483052</td>
+              <td>14-Aug-2025 10:00 AM</td>
+              <td><span class="status completed">Completed</span></td>
+              <td>
+                <button class="edit"><i class="fas fa-edit"></i></button
+                ><button class="delete"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>Zane Cooper</td>
+              <td>+1 9876543210</td>
+              <td>13-Aug-2025 10:00 AM</td>
+              <td><span class="status open">Open</span></td>
+              <td>
+                <button class="edit"><i class="fas fa-edit"></i></button
+                ><button class="delete"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>Brooke Warren</td>
+              <td>+1 8765432109</td>
+              <td>13-Aug-2025 11:00 AM</td>
+              <td><span class="status pending">Pending</span></td>
+              <td>
+                <button class="edit"><i class="fas fa-edit"></i></button
+                ><button class="delete"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>George Matiko</td>
+              <td>0740830422</td>
+              <td>14-Aug-2025 09:00 AM</td>
+              <td><span class="status open">Open</span></td>
+              <td>
+                <button class="edit"><i class="fas fa-edit"></i></button
+                ><button class="delete"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>Rachael Marrion</td>
+               <td>0795483052</td>
+              <td>14-Aug-2025 10:00 AM</td>
+              <td><span class="status completed">Completed</span></td>
+              <td>
+                <button class="edit"><i class="fas fa-edit"></i></button
+                ><button class="delete"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </main>
+    </div>
+  </body>
+</html>
