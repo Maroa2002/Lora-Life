@@ -27,16 +27,17 @@
               <i class="fas fa-calendar-check"></i> Manage Appointment
             </li>
             <li><i class="fas fa-list"></i> Appointment List</li>
+            <li><i class="fas fa-list"></i> Manage Availanility</li>
           </ul>
         </nav>
         <div class="profile">
           <img src="images/me.PNG" alt="Profile Pic" />
           <div class="profile-info">
-            <p>Vet Rachael</p>
-            <p>vet@lora.com</p>
+            <p>{{ current_user.full_name }}</p>
+            <p>{{ current_user.email }}</p>
           </div>
         </div>
-        <button class="logout">Log out</button>
+        <a class="logout" href="{{ url_for('logout') }}">Log out</a>
       </aside>
 
       <main class="content">
@@ -46,6 +47,7 @@
             <i class="fas fa-search"></i>
             <input type="text" placeholder="Search" />
           </div>
+          <a href="{{ url_for('home') }}" class="home-link">Home</a>
         </header>
 
         <table>
@@ -59,86 +61,28 @@
             </tr>
           </thead>
           <tbody>
+            {% for appointment in appointments %}
             <tr>
-              <td>Zane Cooper</td>
-              <td>+1 9876543210</td>
-              <td>13-Aug-2025 10:00 AM</td>
-              <td><span class="status open">Open</span></td>
-              <td>
-                <button class="edit"><i class="fas fa-edit"></i></button
-                ><button class="delete"><i class="fas fa-trash"></i></button>
+              <td>{{ appointment.farmer.full_name }}</td>
+              <td>{{ appointment.farmer.phone }}</td>
+              <td>{{ appointment.slot.start_time.strftime('%Y-%m-%d') }} {{ appointment.slot.start_time.strftime('%H:%M') }}</td>
+              <td><span class="status {{ appointment.status }}">{{ appointment.status }}</span></td>
+              <td class="actions">
+                <!-- <button class="delete"><i class="fas fa-trash"></i></button> -->
+                {% if appointment.status == 'pending' %}
+                <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='confirm') }}">
+                  <button type="submit" class="confirm">Confirm</button>
+                </form>
+                <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='cancel') }}">
+                  <button type="submit" class="cancel">Cancel</button>
+                </form>
+                {% endif %}
+                {% if appointment.status == 'confirmed' %}
+                <button>Mark as completed</button>
+                {% endif %}
               </td>
             </tr>
-            <tr>
-              <td>Brooke Warren</td>
-              <td>+1 8765432109</td>
-              <td>13-Aug-2025 11:00 AM</td>
-              <td><span class="status pending">Pending</span></td>
-              <td>
-                <button class="edit"><i class="fas fa-edit"></i></button
-                ><button class="delete"><i class="fas fa-trash"></i></button>
-              </td>
-            </tr>
-            <tr>
-              <td>George Matiko</td>
-              <td>0740830422</td>
-              <td>14-Aug-2025 09:00 AM</td>
-              <td><span class="status open">Open</span></td>
-              <td>
-                <button class="edit"><i class="fas fa-edit"></i></button
-                ><button class="delete"><i class="fas fa-trash"></i></button>
-              </td>
-            </tr>
-            <tr>
-              <td>Rachael Marrion</td>
-              <td>0795483052</td>
-              <td>14-Aug-2025 10:00 AM</td>
-              <td><span class="status completed">Completed</span></td>
-              <td>
-                <button class="edit"><i class="fas fa-edit"></i></button
-                ><button class="delete"><i class="fas fa-trash"></i></button>
-              </td>
-            </tr>
-            <tr>
-              <td>Zane Cooper</td>
-              <td>+1 9876543210</td>
-              <td>13-Aug-2025 10:00 AM</td>
-              <td><span class="status open">Open</span></td>
-              <td>
-                <button class="edit"><i class="fas fa-edit"></i></button
-                ><button class="delete"><i class="fas fa-trash"></i></button>
-              </td>
-            </tr>
-            <tr>
-              <td>Brooke Warren</td>
-              <td>+1 8765432109</td>
-              <td>13-Aug-2025 11:00 AM</td>
-              <td><span class="status pending">Pending</span></td>
-              <td>
-                <button class="edit"><i class="fas fa-edit"></i></button
-                ><button class="delete"><i class="fas fa-trash"></i></button>
-              </td>
-            </tr>
-            <tr>
-              <td>George Matiko</td>
-              <td>0740830422</td>
-              <td>14-Aug-2025 09:00 AM</td>
-              <td><span class="status open">Open</span></td>
-              <td>
-                <button class="edit"><i class="fas fa-edit"></i></button
-                ><button class="delete"><i class="fas fa-trash"></i></button>
-              </td>
-            </tr>
-            <tr>
-              <td>Rachael Marrion</td>
-               <td>0795483052</td>
-              <td>14-Aug-2025 10:00 AM</td>
-              <td><span class="status completed">Completed</span></td>
-              <td>
-                <button class="edit"><i class="fas fa-edit"></i></button
-                ><button class="delete"><i class="fas fa-trash"></i></button>
-              </td>
-            </tr>
+            {% endfor %}
           </tbody>
         </table>
       </main>
