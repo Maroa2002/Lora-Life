@@ -1,15 +1,16 @@
 @import url("styles.css");
 
 .signup {
-    height: 100vh;
-    padding: 20px;
+    /* height: 100vh; */
+    padding: 130px 20px;
+    color: var(--primary-text-color);
     background: url(./../images/vet-image.jpg) center/cover no-repeat;
 }
 
 .signup-form {
     margin: 0 auto;
     max-width: 800px;
-    background: var(--primary-text-color);
+    background: var(--primary-color);
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
@@ -19,7 +20,7 @@ h1 {
     font-weight: bold;
     font-size: 40px;
     text-align: center;
-    color: #2c5f2d;
+    color: var(--primary-text-color);
     margin-bottom: 30px;
 }
 
@@ -36,7 +37,7 @@ h1 {
 label {
     display: block;
     margin-bottom: 5px;
-    color: #333;
+    color: var(--primary-text-color);
     font-weight: bold;
 }
 
@@ -61,8 +62,8 @@ input, select, textarea {
 }
 
 button {
-    background-color: #2c5f2d;
-    color: white;
+    background-color: var(--primary-text-color);
+    color: #164753;
     padding: 12px 25px;
     border: none;
     border-radius: 5px;
@@ -73,7 +74,7 @@ button {
 }
 
 button:hover {
-    background-color: #1e401f;
+    background-color: #ffaa00;
 }
 
 /* flash messages */
