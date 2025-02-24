@@ -194,35 +194,6 @@ def register():
     return render_template('register.html')
 
 
-# profile
-@app.route('/profile', methods=['GET', 'POST'])
-@login_required
-def profile():
-    """
-    Route to view and update user profile.
-    GET: Renders the profile page.
-    POST: Processes the profile update form.
-    """
-    if request.method == 'POST':
-        current_user.full_name = request.form.get('full_name')
-        current_user.email = request.form.get('email')
-        current_user.phone = request.form.get('phone')
-        
-        if current_user.user_role == 'farmer':
-            current_user.farmer_profile.farm_name = request.form.get('farm_name')
-            current_user.farmer_profile.farm_location = request.form.get('farm_location')
-        elif current_user.user_role == 'vet':
-            current_user.vet_profile.specialization = request.form.get('specialization')
-            current_user.vet_profile.years_experience = request.form.get('years_experience')
-            current_user.vet_profile.clinic_name = request.form.get('clinic_name')
-            current_user.vet_profile.service_area = request.form.get('service_area')
-        
-        db.session.commit()
-        flash('Profile updated successfully', 'success')
-        return redirect(url_for('profile'))
-    
-    return render_template('profile.html')
-
 # Farmer - View Available vets
 @app.route('/find-vets', methods=['GET'])
 @login_required
@@ -430,6 +401,25 @@ def manage_appointment(appointment_id, action):
     
     db.session.commit()
     return redirect(url_for('view_appointments'))
+
+
+# Vet - view profile
+@app.route('/vet/profile', methods=['GET'])
+@login_required
+def vet_profile():
+    """
+    Route to view and update user profile.
+    GET: Renders the profile page.
+    POST: Processes the profile update form.
+    """
+    if current_user.user_role != 'vet':
+        abort(403)
+    
+    appointments = Appointment.query.filter(
+        Appointment.vet_id == current_user.id
+    ).all()
+    
+    return render_template('profile.html', appointments=appointments)
 
 
 @app.route('/logout')
