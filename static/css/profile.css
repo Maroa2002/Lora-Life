@@ -75,6 +75,7 @@ nav ul li.active, nav ul li:hover {
     width: 100%;
     font-weight: bold;
     text-align: center;
+    text-decoration: none;
 }
 
 .content {
@@ -113,6 +114,15 @@ header {
     color: white;
 }
 
+.home-link {
+    padding: 10px 15px;
+    background-color: #0095B7;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -139,20 +149,20 @@ table th {
     border: 1px solid;
 }
 
-.status.open { 
-    border-color: #0095B7;
+.status.confirmed { 
+    /* border-color: #0095B7; */
     color: #0095B7;
     background: transparent;
 }
 
 .status.pending { 
-    border-color: #F1C40F;
+    /* border-color: #F1C40F; */
     color: #F1C40F;
     background: transparent;
 }
 
 .status.completed { 
-    border-color: #E74C3C;
+    /* border-color: #E74C3C; */
     color: #E74C3C;
     background: transparent;
 }
@@ -168,4 +178,11 @@ td button {
 
 td button:hover {
     background: #ddd;
+}
+
+tr .actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
 }
