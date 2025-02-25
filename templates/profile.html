@@ -1,43 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/profile.css') }}"
-    />
-    <script
-      defer
-      src="{{ url_for('static', filename='scripts/profile.js') }}"
-    ></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-  </head>
-  <body>
-    <div class="container">
-      <aside class="sidebar">
-        <h2 class="logo">LORA LIFE</h2>
-        <nav>
-          <ul>
-            <li><a href="{{ url_for('vet_profile') }}">Appointments</a></li>
-            <li><a href="{{ url_for('manage_availability') }}">Manage Availability</a></li>
-          </ul>
-        </nav>
-        <div class="profile">
-          <img src="images/me.PNG" alt="Profile Pic" />
-          <div class="profile-info">
-            <p>{{ current_user.full_name }}</p>
-            <p>{{ current_user.email }}</p>
-          </div>
-        </div>
-        <a class="logout" href="{{ url_for('logout') }}">Log out</a>
-      </aside>
+{% extends 'base_vet_profile.html' %}
+{% block title %} Profile {% endblock %}
+{% block head%}
+  {{ super() }}
+{% endblock %}
 
-      <main class="content">
+{% block content %}
         <header>
           <h2>Manage Appointments</h2>
           <div class="search">
@@ -89,7 +56,5 @@
             {% endfor %}
           </tbody>
         </table>
-      </main>
-    </div>
-  </body>
-</html>
+{% endblock %}
+
