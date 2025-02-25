@@ -179,18 +179,21 @@ td button {
     cursor: pointer;
 }
 
-.confirm {
+.confirm, .complete {
     background: #28a745;
     color: white;
 }
-.confirm:hover {
+
+.confirm:hover, .complete:hover {
     background: #218838;
 }
-.cancel {
+
+.cancel, .delete {
     background: #dc3545;
     color: white;
 }
-.cancel:hover {
+
+.cancel:hover, .delete:hover {
     background: #c82333;
 }
 
