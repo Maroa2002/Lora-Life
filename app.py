@@ -399,6 +399,9 @@ def manage_appointment(appointment_id, action):
     elif action == 'complete':
         appointment.status = 'completed'
         flash('Appointment completed', 'success')
+    elif action == 'delete':
+        db.session.delete(appointment)
+        flash('Appointment deleted', 'danger')
     else:
         flash('Invalid action', 'danger')
     
