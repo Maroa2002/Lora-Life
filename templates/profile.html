@@ -23,9 +23,8 @@
         <h2 class="logo">LORA LIFE</h2>
         <nav>
           <ul>
-            <li class="active"> Manage Appointment</li>
-            <li> Appointment List</li>
-            <li> Manage Availanility</li>
+            <li><a href="{{ url_for('vet_profile') }}">Appointments</a></li>
+            <li><a href="{{ url_for('manage_availability') }}">Manage Availability</a></li>
           </ul>
         </nav>
         <div class="profile">
@@ -71,12 +70,19 @@
                 <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='confirm') }}" method="post">
                   <button type="submit" class="confirm">Confirm</button>
                 </form>
-                <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='cancel') }}">
+                <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='cancel') }}" method="post">
                   <button type="submit" class="cancel">Cancel</button>
                 </form>
                 {% endif %}
                 {% if appointment.status == 'confirmed' %}
-                <button>Mark as completed</button>
+                <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='complete') }}" method="post">
+                  <button type="submit" class="complete">Mark as completed</button>
+                </form>
+                {% endif %}
+                {% if appointment.status == 'completed' or appointment.status == 'cancelled' %}
+                <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='delete') }}" method="post">
+                  <button type="submit" class="delete">Delete</button>
+                </form>
                 {% endif %}
               </td>
             </tr>
