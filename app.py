@@ -89,7 +89,7 @@ def login():
         if user.user_role == 'farmer':
             return redirect(url_for('farmer_appointments'))
         elif user.user_role == 'vet':
-            return redirect(url_for('view_appointments'))
+            return redirect(url_for('vet_profile'))
             
 
     return render_template('login.html')
