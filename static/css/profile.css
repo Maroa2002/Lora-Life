@@ -35,15 +35,21 @@ nav ul {
 }
 
 nav ul li {
-    padding: 12px;
-    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 10px;
-    border-radius: 10px;
 }
 
-nav ul li.active, nav ul li:hover {
+nav ul li a {
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 10px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav ul li.active, nav ul a:hover {
     background-color: white;
     color: #164753;
     font-weight: bold;
