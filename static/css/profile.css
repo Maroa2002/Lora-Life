@@ -156,20 +156,17 @@ table th {
 }
 
 .status.confirmed { 
-    /* border-color: #0095B7; */
     color: #0095B7;
     background: transparent;
 }
 
 .status.pending { 
-    /* border-color: #F1C40F; */
     color: #F1C40F;
     background: transparent;
 }
 
 .status.completed { 
-    /* border-color: #E74C3C; */
-    color: #E74C3C;
+    color: #42e73c;
     background: transparent;
 }
 
