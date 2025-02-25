@@ -23,11 +23,9 @@
         <h2 class="logo">LORA LIFE</h2>
         <nav>
           <ul>
-            <li class="active">
-              <i class="fas fa-calendar-check"></i> Manage Appointment
-            </li>
-            <li><i class="fas fa-list"></i> Appointment List</li>
-            <li><i class="fas fa-list"></i> Manage Availanility</li>
+            <li class="active"> Manage Appointment</li>
+            <li> Appointment List</li>
+            <li> Manage Availanility</li>
           </ul>
         </nav>
         <div class="profile">
@@ -70,7 +68,7 @@
               <td class="actions">
                 <!-- <button class="delete"><i class="fas fa-trash"></i></button> -->
                 {% if appointment.status == 'pending' %}
-                <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='confirm') }}">
+                <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='confirm') }}" method="post">
                   <button type="submit" class="confirm">Confirm</button>
                 </form>
                 <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='cancel') }}">
