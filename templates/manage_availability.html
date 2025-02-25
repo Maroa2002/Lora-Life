@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manage Availability</title>
+{% extends 'base_vet_profile.html' %}
+{% block title %} Manage Availability {% endblock %}
+{% block head %}
+  {{ super() }}
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -11,9 +9,9 @@
         padding: 0;
         background-color: #f4f4f4;
       }
-      .container {
+      .availability-container {
         max-width: 600px;
-        margin: 20px auto;
+        margin: 50px auto;
         padding: 20px;
         background: white;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -21,7 +19,6 @@
       }
       h2, h3 {
         text-align: center;
-        color: #333;
       }
       .form-group {
         margin-bottom: 15px;
@@ -84,9 +81,9 @@
         }
       }
     </style>
-  </head>
-  <body>
-    <div class="container">
+  {% endblock %}
+  {% block content %}
+    <div class="availability-container">
       <h2>Add Availability</h2>
       <form method="POST" action="{{ url_for('manage_availability') }}">
         <div class="form-group">
@@ -115,5 +112,4 @@
         {% endfor %}
       </div>
     </div>
-  </body>
-</html>
+  {% endblock %}
