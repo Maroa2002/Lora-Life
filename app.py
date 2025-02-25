@@ -400,11 +400,11 @@ def manage_appointment(appointment_id, action):
         flash('Invalid action', 'danger')
     
     db.session.commit()
-    return redirect(url_for('view_appointments'))
+    return redirect(url_for('vet_profile'))
 
 
 # Vet - view profile
-@app.route('/vet/profile', methods=['GET'])
+@app.route('/vet/profile', methods=['GET', 'POST'])
 @login_required
 def vet_profile():
     """
