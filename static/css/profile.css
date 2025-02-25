@@ -176,6 +176,21 @@ td button {
     cursor: pointer;
 }
 
+.confirm {
+    background: #28a745;
+    color: white;
+}
+.confirm:hover {
+    background: #218838;
+}
+.cancel {
+    background: #dc3545;
+    color: white;
+}
+.cancel:hover {
+    background: #c82333;
+}
+
 td button:hover {
     background: #ddd;
 }
