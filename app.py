@@ -396,6 +396,8 @@ def manage_appointment(appointment_id, action):
         appointment.status = 'cancelled'
         appointment.availability.is_booked = False
         flash('Appointment cancelled', 'danger')
+    elif action == 'complete':
+        appointment.status = 'completed'
     else:
         flash('Invalid action', 'danger')
     
