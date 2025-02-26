@@ -6,6 +6,7 @@ import os
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 from datetime import datetime
+import smtplib
 from twilio.rest import Client
 
 # load environment variables from .env
@@ -23,6 +24,10 @@ app_secret_key = os.getenv('SECRET_KEY')
 twilio_sid = os.getenv("TWILIO_ACCOUNT_SID")
 twilio_auth_token = os.getenv("TWILIO_AUTH_TOKEN")
 twilio_phone = os.getenv("TWILIO_PHONE_NUMBER")
+
+# Fetch email credentials from env variables
+email_user = os.getenv("EMAIL_USER")
+email_password = os.getenv("EMAIL_PASSWORD")
 
 # Create twilio cllent
 client = Client(twilio_sid, twilio_auth_token)
@@ -428,6 +433,20 @@ def vet_profile():
     return render_template('profile.html', appointments=appointments)
 
 
+@app.route('/contact', methods=['POST'])
+def contact():
+    """
+    Route to handle contact form submission.
+    """
+    user_name = request.form.get('name')
+    user_email = request.form.get('email')
+    message = request.form.get('message')
+    
+    send_email(user_name, user_email, message)
+    flash('Message sent successfully', 'success')
+    return redirect(url_for('home'))
+
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -445,6 +464,24 @@ def allowed_file(filename):
     """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def send_email(user_name, user_email, message):
+    """
+    Helper function to send an email.
+    """
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(email_user, email_password)
+        server.sendmail(
+            email_user, 
+            email_user, 
+            msg="Subject: Contatct Us\n\n{}\n\n{}\n\n{}".format(user_name, user_email, message)
+            )
+        server.quit()
+    except Exception as e:
+        print(e)
 
 if __name__ == '__main__':
     app.run(debug=True)
