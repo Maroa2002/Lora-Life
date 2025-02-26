@@ -259,18 +259,13 @@ def book_appointment(slot_id):
     if vet:
         vet_email = vet.user.email
         message = f"Hello {vet.user.full_name},\n\nYou have a new appointment with {current_user.full_name} on {slot.start_time}."
-        try:
-            smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
-            smtp_server.starttls()
-            smtp_server.login(email_user, email_password)
-            smtp_server.sendmail(email_user, vet_email, 'Subject: New Appointment\n\n{}'.format(message))
-            smtp_server.quit()
-        except smtplib.SMTPException as e:
-            print(f'Error sending email: {e}')
-        except Exception as e:
-            print(f'Error: {e}')
+        msg = 'Subject: New Appointment\n\n{}'.format(message)
+        send_email(vet_email, msg)
     else:
-        print('No vet found')
+        # Log the error
+        app.logger.error('No vet found with user_id {}'.format(slot.vet_id))
+        # Notify the user
+        flash('Appointment booked, but vet notification failed. Please contact support.', 'warning')
     
     flash('Appointment booked successfully', 'success')
     return redirect(url_for('farmer_appointments'))
@@ -444,7 +439,9 @@ def contact():
     user_email = request.form.get('email')
     message = request.form.get('message')
     
-    send_email(user_name, user_email, message)
+    msg = "Subject: Contatct Us\n\n{}\n\n{}\n\n{}".format(user_name, user_email, message)
+    
+    send_email(user_email, msg)
     flash('Message sent successfully', 'success')
     return redirect(url_for('home'))
 
@@ -468,7 +465,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def send_email(user_name, user_email, message):
+def send_email(recipient_email, msg):
     """
     Helper function to send an email.
     """
@@ -476,14 +473,12 @@ def send_email(user_name, user_email, message):
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
         server.login(email_user, email_password)
-        server.sendmail(
-            email_user, 
-            email_user, 
-            msg="Subject: Contatct Us\n\n{}\n\n{}\n\n{}".format(user_name, user_email, message)
-            )
+        server.sendmail(email_user, recipient_email, msg=msg)
         server.quit()
+    except smtplib.SMTPException as e:
+        print('Error sending email: {}'.format(e))
     except Exception as e:
-        print(e)
+        print('Error: {}'.format(e))
 
 if __name__ == '__main__':
     app.run(debug=True)
