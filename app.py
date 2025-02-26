@@ -7,7 +7,6 @@ from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import smtplib
-from twilio.rest import Client
 
 # load environment variables from .env
 load_dotenv()
@@ -20,17 +19,9 @@ db_password = os.getenv("MYSQL_PwD")
 db_name = os.getenv("MYSQL_DB")
 app_secret_key = os.getenv('SECRET_KEY')
 
-# Fetch twilio credentials from env variables
-twilio_sid = os.getenv("TWILIO_ACCOUNT_SID")
-twilio_auth_token = os.getenv("TWILIO_AUTH_TOKEN")
-twilio_phone = os.getenv("TWILIO_PHONE_NUMBER")
-
 # Fetch email credentials from env variables
 email_user = os.getenv("EMAIL_USER")
 email_password = os.getenv("EMAIL_PASSWORD")
-
-# Create twilio cllent
-client = Client(twilio_sid, twilio_auth_token)
 
 
 UPLOAD_FOLDER = 'uploads'
@@ -263,15 +254,26 @@ def book_appointment(slot_id):
     db.session.add(appointment)
     db.session.commit()
     
-    # # Notify vet booking
-    # message = client.messages.create(
-    #     body="Your slot has been booked",
-    #     from_=twilio_phone,
-    #     to="+254791332603"
-    # )
+    # Send Email to Vet
+    vet = Vet.query.filter_by(user_id=slot.vet_id).first()
+    if vet:
+        vet_email = vet.user.email
+        message = f"Hello {vet.user.full_name},\n\nYou have a new appointment with {current_user.full_name} on {slot.start_time}."
+        try:
+            smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
+            smtp_server.starttls()
+            smtp_server.login(email_user, email_password)
+            smtp_server.sendmail(email_user, vet_email, 'Subject: New Appointment\n\n{}'.format(message))
+            smtp_server.quit()
+        except smtplib.SMTPException as e:
+            print(f'Error sending email: {e}')
+        except Exception as e:
+            print(f'Error: {e}')
+    else:
+        print('No vet found')
     
     flash('Appointment booked successfully', 'success')
-    return redirect(url_for('home'))
+    return redirect(url_for('farmer_appointments'))
 
 
 # Farmer - view appointments
