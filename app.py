@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, abort
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, abort
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from models import db, User, Farmer, Vet, VetAvailability, Appointment
+from openai import OpenAI
 from dotenv import load_dotenv
 import os
 from flask_migrate import Migrate
@@ -22,6 +23,9 @@ app_secret_key = os.getenv('SECRET_KEY')
 # Fetch email credentials from env variables
 email_user = os.getenv("EMAIL_USER")
 email_password = os.getenv("EMAIL_PASSWORD")
+
+# openai configuration
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 UPLOAD_FOLDER = 'uploads'
@@ -286,7 +290,7 @@ def book_appointment(slot_id):
         flash('Appointment booked, but vet notification failed. Please contact support.', 'warning')
     
     flash('Appointment booked successfully', 'success')
-    return redirect(url_for('farmer_appointments'))
+    return redirect(url_for('farmer_profile'))
 
 
 # Farmer - view appointments
@@ -489,6 +493,33 @@ def chatbot():
     """
     return render_template('chatbot.html')
 
+
+@app.route('/chatbot/get_response', methods=['POST'])
+def get_response():
+    """
+    Route to get a response from the chatbot.
+    """
+    data = request.json
+    user_message = data.get("message")
+    
+    if not user_message:
+        return jsonify({"error": "No message provided"}), 400
+    
+    try:
+        # Get response from OpenAI
+        completion = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful veterinary assistant."},
+                {"role": "user", "content": user_message}
+            ]
+        )
+        response = completion.choices[0].message.content
+        
+        return jsonify({"reply": response})
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 def allowed_file(filename):
     """
