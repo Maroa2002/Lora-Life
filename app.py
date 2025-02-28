@@ -83,7 +83,7 @@ def login():
         
         # redirect based on role
         if user.user_role == 'farmer':
-            return redirect(url_for('farmer_appointments'))
+            return redirect(url_for('farmer_profile'))
         elif user.user_role == 'vet':
             return redirect(url_for('vet_profile'))
             
@@ -188,6 +188,24 @@ def register():
     
     # GET request - show registration form 
     return render_template('register.html')
+
+# Farmer - view profile
+@app.route('/farmer/profile', methods=['GET', 'POST'])
+@login_required
+def farmer_profile():
+    """
+    Route to view and update user profile.
+    GET: Renders the profile page.
+    POST: Processes the profile update form.
+    """
+    if current_user.user_role != 'farmer':
+        abort(403)
+    
+    appointments = Appointment.query.filter(
+        Appointment.farmer_id == current_user.id
+    ).all()
+    
+    return render_template('farmer_profile.html', appointments=appointments)
 
 
 # Farmer - View Available vets
@@ -433,7 +451,7 @@ def vet_profile():
         Appointment.vet_id == current_user.id
     ).all()
     
-    return render_template('profile.html', appointments=appointments)
+    return render_template('vet_profile.html', appointments=appointments)
 
 
 @app.route('/contact', methods=['POST'])
@@ -461,6 +479,15 @@ def logout():
     logout_user()
     flash('You have been logged out', 'success')
     return redirect(url_for('login'))
+
+
+# Chatbot
+@app.route('/chatbot', methods=['GET'])
+def chatbot():
+    """
+    Route to render the chatbot page.
+    """
+    return render_template('chatbot.html')
 
 
 def allowed_file(filename):
