@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, f
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from models import db, User, Farmer, Vet, VetAvailability, Appointment
 from openai import OpenAI
+from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 from flask_migrate import Migrate
@@ -36,6 +37,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{db_user}:{db_password
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = app_secret_key
+
+# Enable CORS
+CORS(app)
 
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -509,6 +513,7 @@ def get_response():
         # Get response from OpenAI
         completion = client.chat.completions.create(
             model="gpt-4o-mini",
+            store=True,
             messages=[
                 {"role": "system", "content": "You are a helpful veterinary assistant."},
                 {"role": "user", "content": user_message}
