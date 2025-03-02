@@ -94,10 +94,10 @@
       <h3>Your Availability Slots</h3>
       <div class="slots-list">
         {% for slot in slots %}
-          <div class="slot {% if slot.is_booked %} booked {% endif %} ">
-            {{ slot.start_time.strftime('%Y-%m-%d %H:%M') }} to
-            {{ slot.end_time.strftime('%H:%M') }}
             {% if not slot.is_booked %}
+            <div class="slot {% if slot.is_booked %} booked {% endif %} ">
+              {{ slot.start_time.strftime('%Y-%m-%d %H:%M') }} to
+              {{ slot.end_time.strftime('%H:%M') }}
               <form action="{{ url_for('delete_availability', slot_id=slot.id) }}" method="post">
                 <button type="submit" class="btn-danger">Delete</button>
               </form>

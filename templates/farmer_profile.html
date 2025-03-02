@@ -6,7 +6,7 @@
 
 {% block content %}
         <header>
-          <h2>Manage Appointments</h2>
+          <h2>Appointments</h2>
           <div class="search">
             <i class="fas fa-search"></i>
             <input type="text" placeholder="Search" />
@@ -17,7 +17,7 @@
         <table>
           <thead>
             <tr>
-              <th>Full Name</th>
+              <th>Vet Name</th>
               <th>Phone Number</th>
               <th>Appointment Date & Time</th>
               <th>Status</th>
@@ -27,16 +27,12 @@
           <tbody>
             {% for appointment in appointments %}
             <tr>
-              <td>{{ appointment.farmer.full_name }}</td>
-              <td>{{ appointment.farmer.phone }}</td>
+              <td>Dr {{ appointment.vet.full_name }}</td>
+              <td>{{ appointment.vet.phone }}</td>
               <td>{{ appointment.slot.start_time.strftime('%Y-%m-%d') }} {{ appointment.slot.start_time.strftime('%H:%M') }}</td>
               <td><span class="status {{ appointment.status }}">{{ appointment.status }}</span></td>
               <td class="actions">
-                <!-- <button class="delete"><i class="fas fa-trash"></i></button> -->
                 {% if appointment.status == 'pending' %}
-                <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='confirm') }}" method="post">
-                  <button type="submit" class="confirm">Confirm</button>
-                </form>
                 <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='cancel') }}" method="post">
                   <button type="submit" class="cancel">Cancel</button>
                 </form>

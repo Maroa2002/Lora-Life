@@ -16,8 +16,14 @@
         <h2 class="logo">LORA LIFE</h2>
         <nav>
           <ul>
-            <li><a href="{{ url_for('vet_profile') }}">Appointments</a></li>
-            <li><a href="{{ url_for('manage_availability') }}">Manage Availability</a></li>
+            {% if current_user.user_role == 'vet' %}
+              <li><a href="{{ url_for('vet_profile') }}">Manage Appointments</a></li>
+              <li><a href="{{ url_for('manage_availability') }}">Manage Availability</a></li>
+            {% endif %}
+            {% if current_user.user_role == 'farmer' %}
+              <li><a href="{{ url_for('farmer_profile') }}">Appointments</a></li>
+              <li><a href="{{ url_for('find_vets') }}">Find vets</a></li>
+            {% endif %}
           </ul>
         </nav>
         <div class="profile">
