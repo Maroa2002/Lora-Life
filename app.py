@@ -513,11 +513,11 @@ def get_response():
         # Get response from OpenAI
         completion = client.chat.completions.create(
             model="gpt-4o-mini",
-            store=True,
             messages=[
                 {"role": "system", "content": "You are a helpful veterinary assistant."},
                 {"role": "user", "content": user_message}
-            ]
+            ],
+            max_tokens=150
         )
         response = completion.choices[0].message.content
         
