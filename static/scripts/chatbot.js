@@ -20,7 +20,7 @@ const sendMessage = async () => {
 
   let data = await response.json();
   if (data.reply) {
-    chatBox.innerHTML += `<p><strong>Bot:</strong> ${data.reply} </p>`;
+    chatBox.innerHTML += `<p><strong>Bot: ${data.language.toUpperCase()} </strong> ${data.reply} </p>`;
   } else {
     chatBox.innerHTML += `<p><strong>Bot:</strong> Sorry, something went wrong. </p>`;
   }
