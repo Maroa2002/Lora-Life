@@ -3,6 +3,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from models import db, User, Farmer, Vet, VetAvailability, Appointment
 from openai import OpenAI
 from flask_cors import CORS
+from langdetect import detect
 from dotenv import load_dotenv
 import os
 from flask_migrate import Migrate
@@ -510,18 +511,27 @@ def get_response():
         return jsonify({"error": "No message provided"}), 400
     
     try:
+        # Detect language
+        detected_lang = detect(user_message)
+        
+        # Modify system message based on language
+        if detected_lang == "sw":
+            system_message = "Wewe ni mtaalamu wa mifugo na unatoa ushauri kuhusu afya ya wanyama."
+        else:
+            system_message = "You are a helpful veterinary assistant providing insights on animal health."
+        
         # Get response from OpenAI
         completion = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "You are a helpful veterinary assistant."},
+                {"role": "system", "content": system_message},
                 {"role": "user", "content": user_message}
             ],
             max_tokens=150
         )
         response = completion.choices[0].message.content
         
-        return jsonify({"reply": response})
+        return jsonify({"reply": response, "language": detected_lang}), 200
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
