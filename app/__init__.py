@@ -44,7 +44,7 @@ def create_app():
     Returns:
         app (Flask): The configured Flask application instance.
     """
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder='templates', static_folder='static')
 
     # Load app configurations
     app.config['SECRET_KEY'] = app_secret_key
