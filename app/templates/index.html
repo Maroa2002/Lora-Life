@@ -1,12 +1,6 @@
-{% extends 'base.html' %}
+{% extends base.html %}
 
 {% block title %} Home {% endblock %}
-
-{% block head %}
-  {{ super() }}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
-{% endblock %}
-
 {% block content %}
     <!-- Hero section -->
       <section class="hero">
@@ -128,19 +122,19 @@
             </p>
           </div>
           <div class="info-img">
-            <img src="{{ url_for('static', filename='images/world-image.jpg') }}" alt="" />
+            <img src="./images/world-image.jpg" alt="" />
           </div>
         </div>
         <div class="contact-container">
           <div class="contact-image">
             <img
-              src="{{ url_for('static', filename='images/cow-image.jpeg') }}"
+              src="./../static/images/cow-image.jpeg"
               alt="Livestock Health"
             />
           </div>
           <div class="contact-form">
             <h3>Contact Us</h3>
-            <form action="{{ url_for('contact') }}" method="POST">
+            <form action="">
               <label for="name">Name *</label>
               <input
                 type="text"
