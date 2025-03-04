@@ -11,7 +11,7 @@
             <i class="fas fa-search"></i>
             <input type="text" placeholder="Search" />
           </div>
-          <a href="{{ url_for('home') }}" class="home-link">Home</a>
+          <a href="{{ url_for('main.home') }}" class="home-link">Home</a>
         </header>
 
         <table>
@@ -34,20 +34,20 @@
               <td class="actions">
                 <!-- <button class="delete"><i class="fas fa-trash"></i></button> -->
                 {% if appointment.status == 'pending' %}
-                <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='confirm') }}" method="post">
+                <form action="{{ url_for('vet.manage_appointment', appointment_id=appointment.id, action='confirm') }}" method="post">
                   <button type="submit" class="confirm">Confirm</button>
                 </form>
-                <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='cancel') }}" method="post">
+                <form action="{{ url_for('vet.manage_appointment', appointment_id=appointment.id, action='cancel') }}" method="post">
                   <button type="submit" class="cancel">Cancel</button>
                 </form>
                 {% endif %}
                 {% if appointment.status == 'confirmed' %}
-                <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='complete') }}" method="post">
+                <form action="{{ url_for('vet.manage_appointment', appointment_id=appointment.id, action='complete') }}" method="post">
                   <button type="submit" class="complete">Mark as completed</button>
                 </form>
                 {% endif %}
                 {% if appointment.status == 'completed' or appointment.status == 'cancelled' %}
-                <form action="{{ url_for('manage_appointment', appointment_id=appointment.id, action='delete') }}" method="post">
+                <form action="{{ url_for('vet.manage_appointment', appointment_id=appointment.id, action='delete') }}" method="post">
                   <button type="submit" class="delete">Delete</button>
                 </form>
                 {% endif %}

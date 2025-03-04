@@ -79,7 +79,7 @@
   {% block content %}
     <div class="availability-container">
       <h2>Add Availability</h2>
-      <form method="POST" action="{{ url_for('manage_availability') }}">
+      <form method="POST" action="{{ url_for('vet.manage_availability') }}">
         <div class="form-group">
           <label>Start Time (YYYY-MM-DD HH:MM)</label>
           <input type="datetime-local" name="start_time" required />
@@ -98,7 +98,7 @@
             <div class="slot {% if slot.is_booked %} booked {% endif %} ">
               {{ slot.start_time.strftime('%Y-%m-%d %H:%M') }} to
               {{ slot.end_time.strftime('%H:%M') }}
-              <form action="{{ url_for('delete_availability', slot_id=slot.id) }}" method="post">
+              <form action="{{ url_for('vet.delete_availability', slot_id=slot.id) }}" method="post">
                 <button type="submit" class="btn-danger">Delete</button>
               </form>
             {% endif %}

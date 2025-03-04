@@ -57,7 +57,7 @@ def manage_availability():
             
             if overlapping:
                 flash('Time slot overlaps with existing availability', 'danger')
-                return redirect(url_for('manage_availability'))
+                return redirect(url_for('vet.manage_availability'))
             
             new_slot = VetAvailability(
                 vet_id=current_user.id,
@@ -73,7 +73,7 @@ def manage_availability():
         except ValueError:
             flash('Invalid date/time format', 'danger')
             
-        return redirect(url_for('manage_availability'))
+        return redirect(url_for('vet.manage_availability'))
     
     # Get request - show existing slots
     slots = VetAvailability.query.filter_by(vet_id=current_user.id)\
@@ -103,7 +103,7 @@ def delete_availability(slot_id):
         db.session.commit()
         flash('Slot deleted successfully', 'success')
     
-    return redirect(url_for('manage_availability'))
+    return redirect(url_for('vet.manage_availability'))
 
 @vet_bp.route('/appointments', methods=['GET'])
 @login_required
@@ -163,7 +163,7 @@ def manage_appointment(appointment_id, action):
         flash('Invalid action', 'danger')
     
     db.session.commit()
-    return redirect(url_for('vet_profile'))
+    return redirect(url_for('vet.vet_profile'))
 
 @vet_bp.route('/profile', methods=['GET', 'POST'])
 @login_required

@@ -82,7 +82,7 @@
             <h3>Dr. {{ vet.user.full_name }}</h3>
             <p>Specialization: {{ vet.specialization }}</p>
             </div>
-            <a href="{{ url_for('vet_availability', vet_id=vet.id) }}" class="btn">View Availability</a>
+            <a href="{{ url_for('farmer.vet_availability', vet_id=vet.id) }}" class="btn">View Availability</a>
         </div>
       {% endfor %}
     </div>
