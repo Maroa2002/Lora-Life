@@ -7,7 +7,7 @@
         <h1 class="logo">LORA LIFE</h1>
         <!-- center links -->
         <ul class="nav-links">
-          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li><a href="{{ url_for('main.home') }}">Home</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#services">Services</a></li>
           <li><a href="#contact">Contact</a></li>
@@ -15,16 +15,16 @@
         <!-- Login and signup -->
         <div class="auth-links">
           {% if current_user.is_authenticated %}
-          <a href="{{ url_for('logout') }}">Log Out</a>
+          <a href="{{ url_for('auth.logout') }}">Log Out</a>
             {% if current_user.user_role == 'vet' %}
-              <a href="{{ url_for('vet_profile') }}">Profile</a>
+              <a href="{{ url_for('vet.vet_profile') }}">Profile</a>
             {% endif %}
             {% if current_user.user_role == 'farmer' %}
-              <a href="{{ url_for('farmer_profile') }}">Profile</a>
+              <a href="{{ url_for('farmer.farmer_profile') }}">Profile</a>
             {% endif %}
           {% else %}
-          <a href="{{ url_for('login') }}">Log in</a>
-          <a href="{{ url_for('register') }}">Become a member</a>
+          <a href="{{ url_for('auth.login') }}">Log in</a>
+          <a href="{{ url_for('auth.register') }}">Become a member</a>
           {% endif %}
         </div>
       </div>
