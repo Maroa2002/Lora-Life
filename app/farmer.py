@@ -16,12 +16,11 @@ Functions:
 - farmer_appointments(): Allows farmers to view their appointments.
 """
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, abort
+from flask import Blueprint, current_app, render_template, request, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
-from app.models import db, Appointment, Vet, VetAvailability
-from app.email_service import send_email
+from .models import db, Appointment, Vet, VetAvailability
+from .email_service import send_email
 from datetime import datetime
-from app import app
 
 farmer_bp = Blueprint('farmer', __name__)
 
@@ -129,7 +128,7 @@ def book_appointment(slot_id):
         send_email(vet_email, msg)
     else:
         # Log the error
-        app.logger.error('No vet found with user_id {}'.format(slot.vet_id))
+        current_app.logger.error('No vet found with user_id {}'.format(slot.vet_id))
         # Notify the user
         flash('Appointment booked, but vet notification failed. Please contact support.', 'warning')
     

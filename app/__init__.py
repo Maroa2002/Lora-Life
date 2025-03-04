@@ -60,11 +60,11 @@ def create_app():
     login_manager.login_view = 'auth.login'
     
     # Import blueprints
-    from app.auth import auth_bp as auth_blueprint
-    from app.farmer import farmer_bp as farmer_blueprint
-    from app.vet import vet_bp as vet_blueprint
-    from app.chatbot import chatbot_bp as chatbot_blueprint
-    from app.main import main_bp as main_blueprint
+    from .auth import auth_bp as auth_blueprint
+    from .farmer import farmer_bp as farmer_blueprint
+    from .vet import vet_bp as vet_blueprint
+    from .chatbot import chatbot_bp as chatbot_blueprint
+    from .main import main_bp as main_blueprint
     
     # Register blueprints
     app.register_blueprint(main_blueprint)

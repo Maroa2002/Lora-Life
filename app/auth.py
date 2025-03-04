@@ -13,14 +13,13 @@ Functions:
 - logout(): Logs out the current user.
 """
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, current_app,  render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
-from app.models import db, User, Vet, Farmer
-from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from app.utils import allowed_file
+from .models import db, User, Vet, Farmer
+from .utils import allowed_file
+from . import login_manager
 import os
-from app import app, login_manager
 
 # Create a blueprint
 auth_bp = Blueprint('auth', __name__)
@@ -150,7 +149,7 @@ def register():
                 
                 if file and allowed_file(file.filename):
                     filename = secure_filename(file.filename)
-                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
                     file.save(file_path)
                 else:
                     flash('Invalid file type', 'danger')

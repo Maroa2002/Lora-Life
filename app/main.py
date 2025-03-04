@@ -11,7 +11,7 @@ Functions:
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from app.email_service import send_email
+from .email_service import send_email
 
 main_bp = Blueprint('main', __name__)
 

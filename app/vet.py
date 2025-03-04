@@ -17,8 +17,8 @@ Functions:
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, abort
-from app.models import db, VetAvailability, Appointment
-from app.email_service import send_email
+from .models import db, VetAvailability, Appointment
+from .email_service import send_email
 from datetime import datetime
 from flask_login import login_required, current_user
 
