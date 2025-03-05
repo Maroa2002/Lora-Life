@@ -56,4 +56,20 @@ def create_app():
     app.register_blueprint(vet_blueprint, url_prefix='/vet')
     app.register_blueprint(chatbot_blueprint, url_prefix='/chatbot')
     
+    # Import models
+    from .models import User
+    
+    @login_manager.user_loader
+    def load_user(user_id):
+        """
+        Function to load a user object from the database.
+
+        Args:
+            user_id (int): The ID of the user to load.
+
+        Returns:
+            User: The user object corresponding to the user ID.
+        """
+        return User.query.get(int(user_id))
+    
     return app
