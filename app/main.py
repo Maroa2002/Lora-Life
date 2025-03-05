@@ -12,6 +12,13 @@ Functions:
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from .email_service import send_email
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+EMAIL_USER = os.getenv('EMAIL_USER')
 
 main_bp = Blueprint('main', __name__)
 
@@ -41,6 +48,6 @@ def contact():
     
     msg = "Subject: Contact Us\n\n{}\n\n{}\n\n{}".format(user_name, user_email, message)
     
-    send_email(user_email, msg)
+    send_email(EMAIL_USER, msg)
     flash('Message sent successfully', 'success')
     return redirect(url_for('main.home'))

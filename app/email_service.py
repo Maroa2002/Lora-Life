@@ -13,8 +13,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Fetch email credentials from environment variables
-email_user = os.getenv("EMAIL_USER")
-email_password = os.getenv("EMAIL_PASSWORD")
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
 def send_email(recipient_email, msg):
     """
@@ -31,8 +31,8 @@ def send_email(recipient_email, msg):
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
-        server.login(email_user, email_password)
-        server.sendmail(email_user, recipient_email, msg=msg)
+        server.login(EMAIL_USER, EMAIL_PASSWORD)
+        server.sendmail(EMAIL_USER, recipient_email, msg=msg)
         server.quit()
     except smtplib.SMTPException as e:
         print('Error sending email: {}'.format(e))
