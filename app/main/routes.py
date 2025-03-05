@@ -10,8 +10,8 @@ Functions:
 - contact(): Handles the contact form submission and sends an email.
 """
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-from .email_service import send_email
+from flask import render_template, request, redirect, url_for, flash
+from app.utils import send_email
 import os
 from dotenv import load_dotenv
 
@@ -20,7 +20,7 @@ load_dotenv()
 
 EMAIL_USER = os.getenv('EMAIL_USER')
 
-main_bp = Blueprint('main', __name__)
+from . import main_bp
 
 @main_bp.route('/')
 def home():

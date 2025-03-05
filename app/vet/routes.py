@@ -16,13 +16,13 @@ Functions:
 - vet_profile(): Allows vets to view and update their profile.
 """
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, abort
-from .models import db, VetAvailability, Appointment
-from .email_service import send_email
+from flask import render_template, request, redirect, url_for, flash, abort
+from app.models import db, VetAvailability, Appointment
+from app.utils import send_email
 from datetime import datetime
 from flask_login import login_required, current_user
 
-vet_bp = Blueprint('vet', __name__)
+from . import vet_bp
 
 @vet_bp.route('/manage_availability', methods=['GET', 'POST'])
 @login_required

@@ -10,7 +10,7 @@ Functions:
 - get_response(): Gets a response from the chatbot based on user input.
 """
 
-from flask import Blueprint, render_template, request, jsonify
+from flask import render_template, request, jsonify
 from flask_login import login_required
 from openai import OpenAI
 from langdetect import detect
@@ -23,8 +23,7 @@ load_dotenv()
 # Load the OpenAI API key from the environment
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Create a blueprint
-chatbot_bp = Blueprint('chatbot', __name__)
+from . import chatbot_bp
 
 
 @chatbot_bp.route('/', methods=['GET'])

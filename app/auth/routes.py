@@ -13,30 +13,14 @@ Functions:
 - logout(): Logs out the current user.
 """
 
-from flask import Blueprint, current_app,  render_template, request, redirect, url_for, flash
+from flask import current_app,  render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
-from .models import db, User, Vet, Farmer
-from .utils import allowed_file
-from . import login_manager
+from app.models import db, User, Vet, Farmer
+from app.utils import allowed_file
 import os
 
-# Create a blueprint
-auth_bp = Blueprint('auth', __name__)
-
-# loader for Flask_Login
-@login_manager.user_loader
-def load_user(user_id):
-    """
-    Function to load a user object from the database.
-
-    Args:
-        user_id (int): The ID of the user to load.
-
-    Returns:
-        User: The user object if found, None otherwise.
-    """
-    return User.query.get(int(user_id))
+from . import auth_bp
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():

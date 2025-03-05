@@ -16,13 +16,13 @@ Functions:
 - farmer_appointments(): Allows farmers to view their appointments.
 """
 
-from flask import Blueprint, current_app, render_template, request, redirect, url_for, flash, abort
+from flask import current_app, render_template, request, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
-from .models import db, Appointment, Vet, VetAvailability
-from .email_service import send_email
+from app.models import db, Appointment, Vet, VetAvailability
+from app.utils import send_email
 from datetime import datetime
 
-farmer_bp = Blueprint('farmer', __name__)
+from . import farmer_bp
 
 @farmer_bp.route('/profile', methods=['GET', 'POST'])
 @login_required
