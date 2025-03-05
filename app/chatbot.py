@@ -11,6 +11,7 @@ Functions:
 """
 
 from flask import Blueprint, render_template, request, jsonify
+from flask_login import login_required
 from openai import OpenAI
 from langdetect import detect
 from dotenv import load_dotenv
@@ -27,6 +28,7 @@ chatbot_bp = Blueprint('chatbot', __name__)
 
 
 @chatbot_bp.route('/', methods=['GET'])
+@login_required
 def chatbot():
     """
     Route to render the chatbot page.
@@ -38,6 +40,7 @@ def chatbot():
 
 
 @chatbot_bp.route('/get_response', methods=['POST'])
+@login_required
 def get_response():
     """
     Route to get a response from the chatbot.
