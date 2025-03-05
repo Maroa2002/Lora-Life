@@ -69,6 +69,21 @@
       .btn-danger:hover {
         background: #c82333;
       }
+      .alert {
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        border-radius: 5px;
+      }
+
+      .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+
+      .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+      }
       @media (max-width: 600px) {
         .container {
           width: 90%;
@@ -79,6 +94,13 @@
   {% block content %}
     <div class="availability-container">
       <h2>Add Availability</h2>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+          {% endwith %}
       <form method="POST" action="{{ url_for('vet.manage_availability') }}">
         <div class="form-group">
           <label>Start Time (YYYY-MM-DD HH:MM)</label>

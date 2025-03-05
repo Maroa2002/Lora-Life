@@ -7,6 +7,13 @@
 {% block content %}
         <header>
           <h2>Appointments</h2>
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+          {% endwith %}
           <div class="search">
             <i class="fas fa-search"></i>
             <input type="text" placeholder="Search" />

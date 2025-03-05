@@ -7,7 +7,6 @@ It includes the following routes:
 - User logout
 
 Functions:
-- load_user(user_id): Loads a user object from the database.
 - login(): Handles user login.
 - register(): Handles user registration.
 - logout(): Logs out the current user.
@@ -39,7 +38,7 @@ def login():
         
         # Basic validation
         if not email or not password:
-            flash('Please fill in all fields', 'danger')
+            flash('Please fill in all fields', 'warning')
             return redirect(url_for('auth.login'))
         
         user = User.query.filter_by(email=email).first()
@@ -58,6 +57,8 @@ def login():
             return redirect(url_for('farmer.farmer_profile'))
         elif user.user_role == 'vet':
             return redirect(url_for('vet.vet_profile'))
+        
+        return redirect(url_for('auth.login'))
             
     return render_template('login.html')
 
@@ -132,8 +133,10 @@ def register():
                     return redirect(url_for('auth.register'))
                 
                 if file and allowed_file(file.filename):
+                    upload_folder = current_app.config.get('UPLOAD_FOLDER', 'uploads')
+                    os.makedirs(upload_folder, exist_ok=True)
                     filename = secure_filename(file.filename)
-                    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                    file_path = os.path.join(upload_folder, filename)
                     file.save(file_path)
                 else:
                     flash('Invalid file type', 'danger')
@@ -152,9 +155,14 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             
-            flash('Registration successful! Please login.', 'success')
-            return redirect(url_for('auth.login'))
-        
+            login_user(new_user)
+            flash('Registration successful!', 'success')
+            
+            if user_role == 'farmer':
+                return redirect(url_for('farmer.farmer_profile'))
+            elif user_role == 'vet':
+                return redirect(url_for('vet.vet_profile'))
+                    
         except Exception as e:
             db.session.rollback()
             flash('Registration failed. Please try again.', 'danger')
