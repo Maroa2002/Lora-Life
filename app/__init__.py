@@ -17,21 +17,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_cors import CORS
-import os
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
-
-# Set up database configurations
-db_host = os.getenv("MYSQL_HOST", "localhost")
-db_user = os.getenv("MYSQL_USER", "root")
-db_password = os.getenv("MYSQL_PwD")
-db_name = os.getenv("MYSQL_DB")
-app_secret_key = os.getenv('SECRET_KEY')
-
-# Set up file upload configurations
-UPLOAD_FOLDER = 'uploads'
+from .config import Config
 
 # Initialize Flask extensions
 db = SQLAlchemy()
@@ -47,10 +33,7 @@ def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static')
 
     # Load app configurations
-    app.config['SECRET_KEY'] = app_secret_key
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    app.config.from_object(Config)
     
     # Initialize Flask extensions
     db.init_app(app)
