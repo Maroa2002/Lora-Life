@@ -17,9 +17,34 @@ from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 from app.models import db, User, Vet, Farmer
 from app.utils import allowed_file
+from .forms import RoleSelectForm
 import os
 
 from . import auth_bp
+
+@auth_bp.route('/select-role', methods=['GET', 'POST'])
+def select_role():
+    """
+    Route to handle selection of user role during registration.
+
+    GET: Renders the role selection form.
+    POST: Processes the role selection form and redirects to the appropriate registration form.
+
+    Returns:
+        Response: Rendered HTML template for the role selection page or redirects to the registration page.
+    """
+    form = RoleSelectForm()
+    if form.validate_on_submit():
+        user_role = form.user_role.data
+        if user_role == 'farmer':
+            return redirect(url_for('auth.register_farmer'))
+        elif user_role == 'vet':
+            return redirect(url_for('auth.register_vet'))
+        elif user_role == 'admin':
+            return redirect(url_for('auth.register_admin'))
+    
+    return render_template('select_role.html', form=form)
+    
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
