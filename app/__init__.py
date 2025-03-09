@@ -51,7 +51,7 @@ def create_app():
     
     # Register blueprints
     app.register_blueprint(main_blueprint)
-    app.register_blueprint(auth_blueprint)
+    app.register_blueprint(auth_blueprint, url_prefix='/auth')
     app.register_blueprint(farmer_blueprint, url_prefix='/farmer')
     app.register_blueprint(vet_blueprint, url_prefix='/vet')
     app.register_blueprint(chatbot_blueprint, url_prefix='/chatbot')
