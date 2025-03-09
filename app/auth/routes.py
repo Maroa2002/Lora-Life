@@ -15,11 +15,12 @@ Functions:
 from flask import current_app,  render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
-from app.models import db, User, Vet, Farmer
+from app.models import db, User, Vet, Farmer, Location
 from app.utils import allowed_file
 from .forms import RoleSelectForm, FarmerRegistrationForm, VetRegistrationForm
 import os
 from app.utils import COUNTY_TOWNS
+from .utils import register_user
 
 from . import auth_bp
 
@@ -58,6 +59,10 @@ def register_farmer():
         Response: Rendered HTML template for the registration page or redirects to the login page.
     """
     form = FarmerRegistrationForm()
+    if form.validate_on_submit():
+        user = register_user(form, 'farmer')
+        if user:
+            return redirect(url_for('farmer.farmer_profile'))
     
     return render_template('register_farmer.html', form=form)
 
@@ -73,6 +78,10 @@ def register_vet():
         Response: Rendered HTML template for the registration page or redirects to the login page.
     """
     form = VetRegistrationForm()
+    if form.validate_on_submit():
+        user = register_user(form, 'vet')
+        if user:
+            return redirect(url_for('vet.vet_profile'))
     
     return render_template('register_vet.html', form=form)
 
