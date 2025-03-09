@@ -22,3 +22,5 @@ class Config:
     
     # File upload configurations
     UPLOAD_FOLDER = 'uploads'
+    PROFILE_PIC_FOLDER = 'static/uploads/profile_pics'
+    VERIFICATION_FOLDER = 'static/uploads/verification'
