@@ -12,13 +12,14 @@ Functions:
 - logout(): Logs out the current user.
 """
 
-from flask import current_app,  render_template, request, redirect, url_for, flash
+from flask import current_app,  render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 from app.models import db, User, Vet, Farmer
 from app.utils import allowed_file
 from .forms import RoleSelectForm, FarmerRegistrationForm, VetRegistrationForm
 import os
+from app.utils import COUNTY_TOWNS
 
 from . import auth_bp
 
@@ -59,6 +60,20 @@ def register_farmer():
     form = FarmerRegistrationForm()
     
     return render_template('register_farmer.html', form=form)
+
+@auth_bp.route('/get_towns', methods=['GET'])
+def get_towns():
+    """
+    Route to get towns based on the selected county.
+
+    POST: Processes the county selected and returns the towns in that county.
+
+    Returns:
+        Response: JSON object with the towns in the selected county.
+    """
+    county = request.args.get('county')
+    towns = COUNTY_TOWNS.get(county)
+    return jsonify({'towns': towns})
     
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
