@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Farmer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .two-column {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .submit {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .submit:hover {
+            background: #0056b3;
+        }
+
+        .login-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .login-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .two-column {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Register as a {% block user_type %}{% endblock %}</h1>
+        <div class="form">
+            <form action="{% block registration_url %}{% endblock %}" method="post" enctype="multipart/form-data">
+                {{ form.csrf_token }}
+                <div class="two-column">
+                    <div class="form-group">
+                        {{ form.first_name.label }}
+                        {{ form.first_name }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.last_name.label }}
+                        {{ form.last_name }}
+                    </div>
+                </div>
+                <div class="two-column">
+                    <div class="form-group">
+                        {{ form.email.label }}
+                        {{ form.email }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.phone.label }}
+                        {{ form.phone }}
+                    </div>
+                </div>
+                <div class="two-column">
+                    <div class="form-group">
+                        {{ form.password.label }}
+                        {{ form.password }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.confirm_password.label }}
+                        {{ form.confirm_password }}
+                    </div>
+                </div>
+                <div class="two-column">
+                    <div class="form-group">
+                        {{ form.county.label }}
+                        {{ form.county(id="county") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.town.label }}
+                        {{ form.town(id="town") }}
+                    </div>
+                </div>
+                <div class="two-column">
+                    <div class="form-group">
+                        {{ form.profile_picture.label }}
+                        {{ form.profile_picture }}
+                    </div>
+                </div>
+                {% block user_type_form %}{% endblock %}
+                {{ form.submit(class="submit") }}
+            </form>
+            <p class="login-link">
+                Already have an account? <a href="{{ url_for('auth.login') }}">Login</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const countySelect = document.getElementById('county');
+
+        countySelect.addEventListener('change', () => {
+            const selectedCounty = countySelect.value;
+
+            if (!selectedCounty) {
+                throw new Error('County not selected');
+                return;
+            }
+
+        fetch(`/auth/get_towns?county=${selectedCounty}`)
+            .then(response => response.json())
+            .then(data => {
+            
+                if (!data || !data.towns) {
+                    throw new Error('Invalid data format or no towns found');
+                }
+
+                const townSelect = document.getElementById('town');
+                townSelect.innerHTML = '<option value="">Select a Town</option>'; // Clear existing towns
+
+                data.towns.forEach(town => {
+                    let option = document.createElement('option');
+                    option.value = town.toLowerCase().replace(' ', '_');
+                    option.textContent = town;
+                    townSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching towns: ', error));
+        });
+    </script>
+</body>
+</html>
