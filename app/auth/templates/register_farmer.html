@@ -1,0 +1,38 @@
+{% extends 'base_register.html' %}
+
+{% block user_type %}
+    Farmer
+{% endblock %}
+
+{% block registration_url %}
+    {{ url_for('auth.register_farmer') }}
+{% endblock %}
+
+{% block user_type_form %}
+    <div class="two-column">
+        <div class="form-group">
+            {{ form.farm_name.label }}
+            {{ form.farm_name }}
+        </div>
+        <div class="form-group">
+            {{ form.livestock_type.label }}
+            {{ form.livestock_type }}
+        </div>
+    </div>
+    <div class="two-column">
+        <div class="form-group">
+            {{ form.animal_count.label }}
+            {{ form.animal_count }}
+        </div>
+        <div class="form-group">
+            {{ form.alert_preference.label }}
+            {{ form.alert_preference }}
+        </div>
+    </div>
+    <div class="two-column">
+        <div class="form-group">
+            {{ form.preferred_language.label }}
+            {{ form.preferred_language }}
+        </div>
+    </div>
+{% endblock %}
