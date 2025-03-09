@@ -51,7 +51,18 @@ class FarmerRegistrationForm(BaseRegistrationForm):
     Registration form for farmers.
     """
     farm_name = StringField('Farm Name', validators=[Length(min=2, max=255)])
-    livestock_type = StringField('Livestock Type',  validators=[DataRequired(), Length(min=2, max=255)])
+    livestock_type = SelectField(
+        'Livestock Type',
+        choices=[
+            ('', 'Select Livestock Type'),
+            ('cattle', 'Cattle'),
+            ('poultry', 'Poultry'),
+            ('sheep', 'Sheep'),
+            ('goat', 'Goat'),
+            ('pig', 'Pig')
+            ],
+        validators=[DataRequired()]
+        )
     
     animal_count = IntegerField(
         'Number of Animals', 
