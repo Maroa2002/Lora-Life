@@ -151,4 +151,8 @@ COUNTY_TOWNS = {
     "tharaka_nithi": ["Chuka", "Marimanti", "Kathwana", "Chiakariga", "Gatunga"],
     "trans_nzoia": ["Kitale", "Kiminini", "Endebess", "Saboti", "Kapenguria"],
     "turkana": ["Lodwar", "Lokichogio", "Kakuma", "Lokori", "Kalokol"],
+    "uasin_gishu": ["Eldoret", "Burnt Forest", "Kapsabet", "Moiben", "Tembelio"],
+    "vihiga": ["Vihiga", "Mbale", "Chavakali", "Luanda", "Majengo"],
+    "wajir": ["Wajir Town", "Bute", "Griftu", "Eldas", "Tarbaj"],
+    "west_pokot": ["Kapenguria", "Lokichar", "Alale", "Sigor", "Kacheliba"],
 }
