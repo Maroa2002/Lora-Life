@@ -6,6 +6,8 @@ Functions:
 - send_email(recipient_email, msg): Sends an email using SMTP.
 """
 
+from flask import current_app
+from werkzeug.utils import secure_filename
 import smtplib
 import os
 from dotenv import load_dotenv
@@ -31,6 +33,25 @@ def allowed_file(filename):
     """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def save_file(file, upload_folder):
+    """
+    Save a file to a specified folder.
+
+    Args:
+        file (FileStorage): The file to save.
+        folder (str): The folder to save the file in.
+
+    Returns:
+        str: The filename of the saved file.
+    """
+    if file and allowed_file(file.filename):
+        os.makedirs(upload_folder, exist_ok=True)
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(upload_folder, filename)
+        file.save(file_path)
+        return file_path
+    return None
 
 def send_email(recipient_email, msg):
     """
