@@ -61,6 +61,21 @@ def register_farmer():
     
     return render_template('register_farmer.html', form=form)
 
+@auth_bp.route('/register/vet', methods=['POST', 'GET'])
+def register_vet():
+    """
+    Route to handle vet registration.
+
+    GET: Renders the registration form.
+    POST: Processes the registration form and registers the user.
+
+    Returns:
+        Response: Rendered HTML template for the registration page or redirects to the login page.
+    """
+    form = VetRegistrationForm()
+    
+    return render_template('register_vet.html', form=form)
+
 @auth_bp.route('/get_towns', methods=['GET'])
 def get_towns():
     """
