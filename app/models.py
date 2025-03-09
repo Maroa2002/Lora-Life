@@ -22,11 +22,13 @@ class User(db.Model, UserMixin):
 
     Attributes:
         id (int): The unique identifier for the user.
-        full_name (str): The full name of the user.
+        first_name (str): The first name of the user.
+        last_name (str): The last name of the user.
         email (str): The email address of the user.
         phone (str): The phone number of the user.
         password_hash (str): The hashed password of the user.
         user_role (str): The role of the user (farmer or vet).
+        profile_picture (str): The path to the user's profile picture.
         created_at (datetime): The timestamp when the user was created.
         updated_at (datetime): The timestamp when the user was last updated.
         farmer_profile (relationship): One-to-one relationship with the Farmer profile.
@@ -36,18 +38,22 @@ class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    full_name = db.Column(db.String(255), nullable=False)
+    first_name = db.Column(db.String(255), nullable=False)
+    last_name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     phone = db.Column(db.String(20), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     user_role = db.Column(db.Enum('farmer', 'vet', name='user_roles'), nullable=False)
+    profile_picture = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
     farmer_profile = db.relationship('Farmer', backref='user', uselist=False, cascade='all, delete-orphan')
     vet_profile = db.relationship('Vet', backref='user', uselist=False, cascade='all, delete-orphan')
-
+    admin_profile = db.relationship('Admin', backref='user', uselist=False, cascade='all, delete-orphan')
+    location = db.relationship('Location', backref='user', uselist=False, cascade='all, delete-orphan')
+    
     def set_password(self, password):
         """
         Sets the password for the user.
@@ -73,6 +79,28 @@ class User(db.Model, UserMixin):
         return f'<User {self.email}>'
 
 
+class Admin(db.Model):
+    """
+    Represents an admin user in the
+    
+    Attributes:
+        id (int): The unique identifier for the admin.
+        user_id (int): The ID of the associated user.
+        role (Enum): The role of the admin (super, moderator).
+        permissions (json): The permissions of the admin.
+    """
+    
+    __tablename__ = 'admins'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
+    role = db.Column(db.Enum('super', 'moderator', name='admin_roles'), nullable=False)
+    permissions = db.Column(db.JSON, nullable=False)
+
+    def __repr__(self):
+        return f'<Admin {self.id}>'
+
+
 class Farmer(db.Model):
     """
     Represents a farmer profile.
@@ -81,7 +109,10 @@ class Farmer(db.Model):
         id (int): The unique identifier for the farmer profile.
         user_id (int): The ID of the associated user.
         farm_name (str): The name of the farm.
-        farm_location (str): The location of the farm.
+        livestock_type (str): The type of livestock on the farm.
+        animal_count (int): The number of animals on the farm.
+        alert_preference (str): The preferred method of receiving alerts.
+        preferred_language (str): The preferred language for communication.
     """
 
     __tablename__ = 'farmers'
@@ -89,7 +120,10 @@ class Farmer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
     farm_name = db.Column(db.String(255))
-    farm_location = db.Column(db.Text, nullable=False)
+    livestock_type = db.Column(db.String(255), nullable=False)
+    animal_count = db.Column(db.Integer, nullable=False, default=0)
+    alert_preference = db.Column(db.Enum('email', 'sms', 'whatsapp' , 'app', name='alert_preferences'), nullable=False, default='app')
+    preferred_language = db.Column(db.String(255), nullable=False, default='English')
 
     def __repr__(self):
         return f'<Farmer {self.farm_name}>'
@@ -102,11 +136,12 @@ class Vet(db.Model):
     Attributes:
         id (int): The unique identifier for the vet profile.
         user_id (int): The ID of the associated user.
+        license_number (str): The license number of the vet.
+        experience_years (int): The number of years of experience the vet has.
         specialization (str): The specialization of the vet.
-        years_experience (int): The number of years of experience the vet has.
         verification_document_path (str): The path to the verification document.
         clinic_name (str): The name of the clinic.
-        service_area (str): The service area of the vet.
+        avg_rating (float): The average rating of the vet.
         is_verified (bool): Indicates if the vet is verified.
     """
 
@@ -114,15 +149,38 @@ class Vet(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
+    license_number = db.Column(db.String(255), unique=True, nullable=False)
+    experience_years = db.Column(db.Integer, nullable=False, default=0)
     specialization = db.Column(db.String(255), nullable=False)
-    years_experience = db.Column(db.Integer, nullable=False)
     verification_document_path = db.Column(db.String(255), nullable=False)
-    clinic_name = db.Column(db.String(255))
-    service_area = db.Column(db.Text, nullable=False)
+    clinic_name = db.Column(db.String(255), nullable=True)
+    avg_rating = db.Column(db.Float, default=0.0)
     is_verified = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f'<Vet {self.specialization}>'
+    
+
+class Location(db.Model):
+    """
+    Represents a location.
+
+    Attributes:
+        id (int): The unique identifier for the location.
+        user_id (int): The ID of the associated user.
+        county (str): The county of the location.
+        town (str): The town of the location.
+    """
+
+    __tablename__ = 'locations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
+    county = db.Column(db.String(255), nullable=False)
+    town = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return f'<Location {self.county} - {self.town}>'
 
 
 class VetAvailability(db.Model):
@@ -145,6 +203,7 @@ class VetAvailability(db.Model):
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=False)
     is_booked = db.Column(db.Boolean, nullable=False)
+    available_days = db.Column(db.JSON, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     vet = db.relationship('User', backref='availability_slots')
