@@ -50,27 +50,27 @@ class BaseRegistrationForm(FlaskForm):
         confirm_password (PasswordField): Field to confirm user's password.
         profile_picture (FileField): Field for user's profile picture.
     """
-    first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=255)])
-    last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=255)])
-    email = StringField('Email', validators=[DataRequired(), Email(), Length(max=255)])
+    first_name = StringField('First Name *', validators=[DataRequired(), Length(min=2, max=255)])
+    last_name = StringField('Last Name *', validators=[DataRequired(), Length(min=2, max=255)])
+    email = StringField('Email *', validators=[DataRequired(), Email(), Length(max=255)])
     
-    phone = StringField('Phone Number', validators=[
+    phone = StringField('Phone Number *', validators=[
         DataRequired(),
         Length(min=10, max=20),
         Regexp(r'^\+\d{1,3}\d{7,10}$', message='Phone number must be in the format +254712345678')
         ], render_kw={"placeholder": "e.g. +254712345678"})
     
-    county = SelectField('County', choices=KENYA_COUNTIES, validators=[DataRequired()])
-    town = SelectField('Town', choices=[('', 'Select a Town')], validators=[DataRequired()])
+    county = SelectField('County *', choices=KENYA_COUNTIES, validators=[DataRequired()])
+    town = SelectField('Town *', choices=[('', 'Select a Town')], validators=[DataRequired()])
     
-    password = PasswordField('Password', validators=[
+    password = PasswordField('Password *', validators=[
         DataRequired(),
         Length(min=8, max=255),
         Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
                message='Password must have at least one uppercase letter, one lowercase letter, one number, and one special character.')
         ])
     
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
+    confirm_password = PasswordField('Confirm Password *', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
     profile_picture = FileField('Profile Picture', validators=[FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
 
 class FarmerRegistrationForm(BaseRegistrationForm):
@@ -87,7 +87,7 @@ class FarmerRegistrationForm(BaseRegistrationForm):
     """
     farm_name = StringField('Farm Name', validators=[Length(min=2, max=255)])
     livestock_type = SelectField(
-        'Livestock Type',
+        'Livestock Type *',
         choices=[
             ('', 'Select Livestock Type'),
             ('cattle', 'Cattle'),
@@ -100,7 +100,7 @@ class FarmerRegistrationForm(BaseRegistrationForm):
         )
     
     animal_count = IntegerField(
-        'Number of Animals', 
+        'Number of Animals *', 
         validators=[
             DataRequired(), 
             NumberRange(min=1, message='Number of animals must be a positive number.')
@@ -108,7 +108,7 @@ class FarmerRegistrationForm(BaseRegistrationForm):
         )
     
     alert_preference = SelectField(
-        'Alert Preference',
+        'Alert Preference *',
         choices=[
             ('', 'Select Preference'), 
             ('email', 'Email'), 
@@ -120,7 +120,7 @@ class FarmerRegistrationForm(BaseRegistrationForm):
         )
     
     preferred_language = SelectField(
-        'Preferred Language',
+        'Preferred Language *',
         choices=[
             ('', 'Select Language'),
             ('English', 'English'),
@@ -143,10 +143,10 @@ class VetRegistrationForm(BaseRegistrationForm):
         verification_document (FileField): Field for verification document.
         submit (SubmitField): Submit button for the form.
     """
-    license_number = StringField('License Number', validators=[DataRequired(), Length(min=5, max=255)])
+    license_number = StringField('License Number *', validators=[DataRequired(), Length(min=5, max=255)])
     
     experience_years = IntegerField(
-        'Years of Experience', 
+        'Years of Experience *', 
         validators=[
             DataRequired(), 
             NumberRange(min=1, message='Years of experience must be a positive number.')
@@ -154,7 +154,7 @@ class VetRegistrationForm(BaseRegistrationForm):
         )
     
     specialization = SelectField(
-        'Specialization',
+        'Specialization *',
         choices=[
             ('', 'Select Specialization'),
             ('cattle', 'Cattle'),
@@ -170,7 +170,7 @@ class VetRegistrationForm(BaseRegistrationForm):
     clinic_name = StringField('Clinic Name', validators=[Length(min=2, max=255)])
     
     verification_document = FileField(
-        'Verification Document', 
+        'Verification Document *', 
         validators=[
             FileRequired(), 
             FileAllowed(['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'], 'PDF, DOC, DOCX, JPG, JPEG, PNG only!')

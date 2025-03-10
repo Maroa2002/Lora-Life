@@ -39,6 +39,12 @@
             width: 100%;
         }
 
+        .required {
+            color: red;
+            margin-left: 3px;
+            font-size: 18px;
+        }
+
         .column {
             margin-bottom: 15px;
         }
@@ -47,7 +53,7 @@
             font-weight: bold;
             margin-bottom: 5px;
             color: #333;
-            display: block;
+            display: inline-block;
         }
 
         input {
@@ -119,12 +125,12 @@
                 {{ form.csrf_token}}
 
                 <div class="column">
-                    {{ form.email.label }}
+                    {{ form.email.label | safe }} <span class="required">*</span>
                     {{ form.email }}
                 </div>
 
                 <div class="column">
-                    {{ form.password.label }}
+                    {{ form.password.label | safe }} <span class="required">*</span>
                     {{ form.password }}
                 </div>
 
