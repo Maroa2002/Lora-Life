@@ -17,7 +17,7 @@ from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 from app.models import db, User, Vet, Farmer, Location
 from app.utils import allowed_file
-from .forms import RoleSelectForm, FarmerRegistrationForm, VetRegistrationForm
+from .forms import RoleSelectForm, FarmerRegistrationForm, VetRegistrationForm, LoginForm
 import os
 from app.utils import COUNTY_TOWNS
 from .utils import register_user
@@ -84,6 +84,21 @@ def register_vet():
             return redirect(url_for('vet.vet_profile'))
     
     return render_template('register_vet.html', form=form)
+
+@auth_bp.route('/login', methods=['GET', 'POST'])
+def login_user():
+    """
+    Route to handle user login.
+
+    GET: Renders the login form.
+    POST: Processes the login form and logs in the user.
+
+    Returns:
+        Response: Rendered HTML template for the login page or redirects to the appropriate profile page.
+    """
+    form = LoginForm()
+    
+    return render_template('user_login.html', form=form)    
 
 @auth_bp.route('/get_towns', methods=['GET'])
 def get_towns():
