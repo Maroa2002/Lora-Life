@@ -44,6 +44,35 @@
         gap: 5px;
         text-align: left;
       }
+
+      label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #333;
+      }
+
+      select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      .submit {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .submit:hover {
+            background: #0056b3;
+        }
+
     </style>
   </head>
   <body>
@@ -60,7 +89,7 @@
             </div>
     
             <div class="form-group">
-              {{ form.submit }} <!-- Submit button -->
+              {{ form.submit(class="submit") }} <!-- Submit button -->
             </div>
           
           </div>
