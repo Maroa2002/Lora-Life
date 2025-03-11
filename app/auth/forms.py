@@ -61,12 +61,12 @@ class BaseRegistrationForm(FlaskForm):
         ], render_kw={"placeholder": "e.g. +254712345678"})
     
     county = SelectField('County *', choices=KENYA_COUNTIES, validators=[DataRequired()])
-    town = SelectField('Town *', choices=[('', 'Select a Town')], validators=[DataRequired()])
+    town = SelectField('Town *', choices=[], validators=[DataRequired()])
     
     password = PasswordField('Password *', validators=[
         DataRequired(),
         Length(min=8, max=255),
-        Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
+        Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$',
                message='Password must have at least one uppercase letter, one lowercase letter, one number, and one special character.')
         ])
     
@@ -85,7 +85,7 @@ class FarmerRegistrationForm(BaseRegistrationForm):
         preferred_language (SelectField): Field for preferred language.
         submit (SubmitField): Submit button for the form.
     """
-    farm_name = StringField('Farm Name', validators=[Length(min=2, max=255)])
+    farm_name = StringField('Farm Name', validators=[Length(min=0, max=255)])
     livestock_type = SelectField(
         'Livestock Type *',
         choices=[
@@ -167,7 +167,7 @@ class VetRegistrationForm(BaseRegistrationForm):
         validators=[DataRequired()]
         )
     
-    clinic_name = StringField('Clinic Name', validators=[Length(min=2, max=255)])
+    clinic_name = StringField('Clinic Name', validators=[Length(min=0, max=255)])
     
     verification_document = FileField(
         'Verification Document *', 
@@ -193,7 +193,7 @@ class LoginForm(FlaskForm):
         validators=[
             DataRequired(),
             Length(min=8, max=255),
-            Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
+            Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$',
                    message='Password must have at least one uppercase letter, one lowercase letter, one number, and one special character.')
             ]
         )
