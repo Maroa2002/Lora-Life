@@ -112,7 +112,7 @@
     <div class="container">
         <h1>Register as a {% block user_type %}{% endblock %}</h1>
         <div class="form">
-            <form action="{% block registration_url %}{% endblock %}" method="post" enctype="multipart/form-data">
+            <form action="{% block registration_url %}{% endblock %}" method="post" enctype="multipart/form-data" id="register-form">
                 {{ form.csrf_token }}
                 <div class="two-column">
                     <div class="form-group">
@@ -164,7 +164,7 @@
                 {{ form.submit(class="submit") }}
             </form>
             <p class="login-link">
-                Already have an account? <a href="{{ url_for('auth.login_user') }}">Login</a>
+                Already have an account? <a href="{{ url_for('auth.login') }}">Login</a>
             </p>
         </div>
     </div>
@@ -193,7 +193,7 @@
 
                 data.towns.forEach(town => {
                     let option = document.createElement('option');
-                    option.value = town.toLowerCase().replace(' ', '_');
+                    option.value = town;
                     option.textContent = town;
                     townSelect.appendChild(option);
                 });
