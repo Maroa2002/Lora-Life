@@ -5,6 +5,8 @@ from app.models import User, Location, Farmer, Vet
 from app.utils import save_file
 
 def register_user(form, role):
+    print('Registering user...')
+    
     first_name = form.first_name.data
     last_name = form.last_name.data
     email = form.email.data
@@ -15,14 +17,18 @@ def register_user(form, role):
     confirm_password = form.confirm_password.data
     profile_picture = form.profile_picture.data
     
+    print(f"Received data: {first_name}, {last_name}, {email}, {phone}, {county}, {town}, {password}, {confirm_password}, {profile_picture}")
+    
     # Check if password and confirm password match
     if password != confirm_password:
         flash('Passwords do not match!', 'danger')
+        print('Passwords do not match!')
         return None
     
     # Check if user already exists
     if User.query.filter((User.email == email) | (User.phone == phone)).first():
         flash('Email or phone number already exists!', 'danger')
+        print('Email or phone number already exists!')
         return None
     
     try:
@@ -40,6 +46,8 @@ def register_user(form, role):
         )
         new_user.set_password(password)
         
+        print('User:', new_user)
+        
         # Set location
         location = Location(county=county, town=town)
         new_user.location = location
@@ -54,6 +62,7 @@ def register_user(form, role):
                 preferred_language = form.preferred_language.data
             )
             new_user.farmer_profile = farmer
+            print('Farmer:', farmer)
         elif role == 'vet':
             verification_folder = current_app.config.get('VERIFICATION_FOLDER', 'static/uploads/verification')
             verification_doc_path = save_file(form.verification_document.data, verification_folder)
@@ -66,9 +75,11 @@ def register_user(form, role):
                 clinic_name = form.clinic_name.data
             )
             new_user.vet_profile = vet
+            print('Vet:', vet)
             
         db.session.add(new_user)
         db.session.commit()
+        print('User added successfully!')
         
         login_user(new_user)
         flash('Account created successfully!', 'success')
@@ -77,4 +88,5 @@ def register_user(form, role):
     except Exception as e:
         db.session.rollback()
         flash('An error occurred. Please try again.', 'danger')
+        print('Error:', e)
         return None
