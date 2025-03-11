@@ -121,7 +121,7 @@
     <div class="container">
         <div class="form">
             <h1>Welcome Back!</h1>
-            <form action="{{ url_for('auth.login_user') }}" method="post">
+            <form action="{{ url_for('auth.login') }}" method="post">
                 {{ form.csrf_token}}
 
                 <div class="column">
