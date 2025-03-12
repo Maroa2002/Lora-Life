@@ -20,6 +20,13 @@ class Config:
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DB}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
+    # Mail configurations
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = os.getenv('EMAIL_USER')
+    MAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+    
     # File upload configurations
     UPLOAD_FOLDER = 'uploads'
     PROFILE_PIC_FOLDER = 'static/uploads/profile_pics'
