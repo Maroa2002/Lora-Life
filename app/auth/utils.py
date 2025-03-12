@@ -3,6 +3,7 @@ from flask_login import login_user
 from app import db
 from app.models import User, Location, Farmer, Vet
 from app.utils import save_file
+import pyotp
 
 def register_user(form, role):
     print('Registering user...')
@@ -36,13 +37,16 @@ def register_user(form, role):
         profile_pic_folder = current_app.config.get('PROFILE_PIC_FOLDER', 'static/uploads/profile_pics')
         profile_pic_path = save_file(profile_picture, profile_pic_folder) if profile_picture else None
         
+        otp_secret = pyotp.random_base32() # Generate a random  OTP secret key
+        
         new_user = User(
             first_name = first_name,
             last_name = last_name,
             email = email,
             phone = phone,
             user_role = role,
-            profile_picture = profile_pic_path
+            profile_picture = profile_pic_path,
+            otp_secret = otp_secret
         )
         new_user.set_password(password)
         

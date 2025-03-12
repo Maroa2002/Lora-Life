@@ -12,15 +12,17 @@ Functions:
 - logout(): Logs out the current user.
 """
 
-from flask import current_app,  render_template, request, redirect, url_for, flash, jsonify
+from flask import current_app,  render_template, request, redirect, url_for, flash, jsonify, session
 from flask_login import login_user, logout_user, login_required
+from flask_mail import Message
+import pyotp
 from werkzeug.utils import secure_filename
 from app.models import db, User, Vet, Farmer, Location
 from app.utils import allowed_file
-from .forms import RoleSelectForm, FarmerRegistrationForm, VetRegistrationForm, LoginForm
-import os
+from .forms import RoleSelectForm, FarmerRegistrationForm, VetRegistrationForm, LoginForm, OTPForm
 from app.utils import COUNTY_TOWNS
 from .utils import register_user
+from app import mail
 
 from . import auth_bp
 
@@ -142,22 +144,77 @@ def login():
             print('Invalid email or password')
             return redirect(url_for('auth.login'))
         
-        login_user(user)
-        print('User logged in successfully', user)
-        flash('Login successful!', 'success')
+        session['email'] = email # Store the email in the session
         
-        if user.user_role == 'farmer':
-            return redirect(url_for('farmer.farmer_profile'))
-        elif user.user_role == 'vet':
-            return redirect(url_for('vet.vet_profile'))
-        elif user.user_role == 'admin':
-            return redirect(url_for('admin.admin_profile'))
+        # Generate 6-digit OTP
+        otp = pyotp.TOTP(user.otp_secret).now()
+        print('OTP:', otp)
         
-        return redirect(url_for('auth.login_user'))
+        # Send OTP to user's email
+        msg = Message('Your 2FA Code', sender=current_app.config['MAIL_USERNAME'], recipients=[email])
+        msg.body = f'Your One-Time password (OTP) is: {otp}'
+        mail.send(msg)
+        
+        flash('A 6-digit OTP has been sent to your email', 'info')
+        return redirect(url_for('auth.verify_otp'))
     else:
         print('Form validation failed', form.errors)
     
-    return render_template('user_login.html', form=form)    
+    return render_template('user_login.html', form=form) 
+
+@auth_bp.route('/verify-otp', methods=['GET', 'POST'])
+def verify_otp():
+    """
+    Route to handle OTP verification.
+
+    GET: Renders the OTP verification form.
+    POST: Processes the OTP verification form and logs in the user.
+
+    Returns:
+        Response: Rendered HTML template for the OTP verification page or redirects to the appropriate profile page.
+    """
+    if 'email' not in session:
+        flash('Unauthorized access', 'warning')
+        return redirect(url_for('auth.login'))
+    
+    form = OTPForm()
+    if form.validate_on_submit():
+        print('Form validated successfully')
+        otp = form.otp.data
+        
+        user = User.query.filter(User.email == session['email']).first()
+
+        if user:
+            print(f'Stored OTP secret: {user.otp_secret}')
+            print(f'Entered OTP: {otp}')
+            print(f'Generated OTP: {pyotp.TOTP(user.otp_secret).now()}')
+
+            if pyotp.TOTP(user.otp_secret).verify(otp, valid_window=1):
+                session['user_id'] = user.id # Store the user ID in the session
+                print(f'Logged in user: {user.email}')
+                login_user(user)
+                print('Logged in successfully')
+                flash('You have successfully logged in', 'success')
+                
+                print(f'User role: {user.user_role}')
+                
+                if user.user_role == 'farmer':
+                    return redirect(url_for('farmer.farmer_profile'))
+                elif user.user_role == 'vet':
+                    return redirect(url_for('vet.vet_profile'))
+                elif user.user_role == 'admin':
+                    return redirect(url_for('admin.admin_profile'))
+                
+                flash('Invalid user role', 'danger')
+                return redirect(url_for('auth.login'))
+            
+            else:
+                flash('Invalid OTP', 'danger')
+                print('OTP verification failed')
+    else:
+        print('Form validation failed', form.errors)
+        
+    return render_template('verify_otp.html', form=form)  
 
 @auth_bp.route('/get_towns', methods=['GET'])
 def get_towns():
