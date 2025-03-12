@@ -199,3 +199,13 @@ class LoginForm(FlaskForm):
         )
     
     submit = SubmitField('Login')
+
+class OTPForm(FlaskForm):
+    """
+    Form for user OTP verification.
+
+    Attributes:
+        otp (StringField): Field for user's OTP.
+    """
+    otp = StringField('Enter OTP', validators=[DataRequired(), Length(min=6, max=6)])
+    submit = SubmitField('Verify OTP')
