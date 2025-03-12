@@ -1,6 +1,8 @@
-from flask import flash, current_app
+from flask import flash, current_app, url_for
 from flask_login import login_user
-from app import db
+from itsdangerous import URLSafeTimedSerializer
+from flask_mail import Message
+from app import db, mail
 from app.models import User, Location, Farmer, Vet
 from app.utils import save_file
 import pyotp
@@ -46,7 +48,8 @@ def register_user(form, role):
             phone = phone,
             user_role = role,
             profile_picture = profile_pic_path,
-            otp_secret = otp_secret
+            otp_secret = otp_secret,
+            email_verified = False
         )
         new_user.set_password(password)
         
@@ -85,7 +88,7 @@ def register_user(form, role):
         db.session.commit()
         print('User added successfully!')
         
-        login_user(new_user)
+        # login_user(new_user)
         flash('Account created successfully!', 'success')
         return new_user
     
@@ -94,3 +97,67 @@ def register_user(form, role):
         flash('An error occurred. Please try again.', 'danger')
         print('Error:', e)
         return None
+
+def get_serializer():
+    """
+    Get URLSafeTimedSerializer object for email confirmation.
+    
+    Returns:
+        URLSafeTimedSerializer: Serializer object.
+    """
+    return URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+
+def generate_confirmation_token(email):
+    """
+    Generate a token for email confirmation.
+    
+    Args:
+        email (str): User's email address.
+    
+    Returns:
+        str: Token for email confirmation.
+    """
+    s = get_serializer()
+    
+    token = s.dumps(email, salt='email-confirm')
+    
+    return token
+
+def send_verification_email(user):
+    """
+    Send an email to verify the user's email address.
+    
+    Args:
+        user (User): User object.
+    """
+    token = generate_confirmation_token(user.email)
+    
+    verify_url = url_for('auth.verify_email', token=token, _external=True)
+    
+    msg = Message('Confirm Your Email Address', sender=current_app.config['MAIL_USERNAME'], recipients=[user.email])
+    msg.body = f'Click the link below to verify your email address:\n{verify_url}'
+    
+    try:
+        mail.send(msg)
+        flash('A verification email has been sent to your email address.', 'info')
+    except Exception as e:
+        flash('An error occurred sending the verification email.', 'danger')
+        print('Error:', e)
+
+def verify_email_token(token):
+    """
+    Verify the email confirmation token.
+    
+    Args:
+        token (str): Token to verify.
+    
+    Returns:
+        str: Email address if the token is valid, None otherwise.
+    """
+    s = get_serializer()
+    
+    try:
+        email = s.loads(token, salt='email-confirm', max_age=86400)
+    except:
+        return False
+    return email

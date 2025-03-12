@@ -21,7 +21,7 @@ from app.models import db, User, Vet, Farmer, Location
 from app.utils import allowed_file
 from .forms import RoleSelectForm, FarmerRegistrationForm, VetRegistrationForm, LoginForm, OTPForm
 from app.utils import COUNTY_TOWNS
-from .utils import register_user
+from .utils import register_user, generate_confirmation_token, verify_email_token, send_verification_email
 from app import mail
 
 from . import auth_bp
@@ -71,15 +71,10 @@ def register_farmer():
         form.town.choices = [('', 'Select a Town')]
     
     if form.validate_on_submit():
-        print('Form validated successfully')
         user = register_user(form, 'farmer')
         if user:
-            print('User created successfully', user)
-            return redirect(url_for('farmer.farmer_profile'))
-        else:
-            print('User not created')
-    else:
-        print('Form validation failed', form.errors)
+            send_verification_email(user)
+            return redirect(url_for('auth.login'))
     
     return render_template('register_farmer.html', form=form)
 
@@ -105,15 +100,42 @@ def register_vet():
         form.town.choices = [('', 'Select a Town')]
     
     if form.validate_on_submit():
-        print('Form validated successfully')
         user = register_user(form, 'vet')
         if user:
-            print('User created successfully', user)
-            return redirect(url_for('vet.vet_profile'))
-    else:
-        print('Form validation failed', form.errors)
+            send_verification_email(user)
+            return redirect(url_for('auth.login'))
     
     return render_template('register_vet.html', form=form)
+
+@auth_bp.route('/verify-email/<token>', methods=['GET'])
+def verify_email(token):
+    """
+    Route to handle email verification.
+    
+    Args:
+        token (str): Email verification token.
+    
+    GET: Processes the email verification token and verifies the user's email.
+
+    Returns:
+        Response: Redirects to the login page with a success message.
+    """
+    try:
+        email = verify_email_token(token)
+        user = User.query.filter(User.email == email).first()
+        
+        if user and not user.email_verified:
+            user.email_verified = True
+            db.session.commit()
+            flash('Email verified successfully!', 'success')
+        else:
+            flash('Invalid or expired token', 'danger')
+    except:
+        flash('The verification link is invalid or has expired.', 'danger')
+        
+    return redirect(url_for('auth.login'))
+        
+    
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -128,35 +150,37 @@ def login():
     """
     form = LoginForm()
     if form.validate_on_submit():
-        print('Form validated successfully')
         email = form.email.data
         password = form.password.data
         
         if not email or not password:
             flash('Please fill in all fields', 'warning')
-            print('Please fill in all fields')
-            return redirect(url_for('auth.login_user'))
+            return redirect(url_for('auth.login'))
         
         user = User.query.filter(User.email == email).first()
         
-        if not user or not user.check_password(password):
+        if user and user.check_password(password):
+            if not user.email_verified:
+                flash('Please verify your email address to log in', 'warning')
+                return redirect(url_for('auth.login'))
+        
+            session['email'] = email # Store the email in the session
+        
+            # Generate 6-digit OTP
+            otp = pyotp.TOTP(user.otp_secret).now()
+            print('OTP:', otp)
+        
+            # Send OTP to user's email
+            msg = Message('Your 2FA Code', sender=current_app.config['MAIL_USERNAME'], recipients=[email])
+            msg.body = f'Your One-Time password (OTP) is: {otp}'
+            mail.send(msg)
+        
+            flash('A 6-digit OTP has been sent to your email', 'info')
+            return redirect(url_for('auth.verify_otp'))
+        else:
             flash('Invalid email or password', 'danger')
-            print('Invalid email or password')
             return redirect(url_for('auth.login'))
-        
-        session['email'] = email # Store the email in the session
-        
-        # Generate 6-digit OTP
-        otp = pyotp.TOTP(user.otp_secret).now()
-        print('OTP:', otp)
-        
-        # Send OTP to user's email
-        msg = Message('Your 2FA Code', sender=current_app.config['MAIL_USERNAME'], recipients=[email])
-        msg.body = f'Your One-Time password (OTP) is: {otp}'
-        mail.send(msg)
-        
-        flash('A 6-digit OTP has been sent to your email', 'info')
-        return redirect(url_for('auth.verify_otp'))
+    
     else:
         print('Form validation failed', form.errors)
     
