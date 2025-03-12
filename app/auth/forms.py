@@ -209,3 +209,41 @@ class OTPForm(FlaskForm):
     """
     otp = StringField('Enter OTP', validators=[DataRequired(), Length(min=6, max=6)])
     submit = SubmitField('Verify OTP')
+
+class ForgotPasswordForm(FlaskForm):
+    """
+    Form for user forgot password.
+
+    Attributes:
+        email (StringField): Field for user's email.
+    """
+    email = StringField(
+        'Email',
+        validators=[
+            DataRequired(), 
+            Email(), 
+            Length(max=255)
+            ], 
+        render_kw={"placeholder": "Enter your email"}
+        )
+    submit = SubmitField('Submit')
+
+class ResetPasswordForm(FlaskForm):
+    """
+    Form for user reset password.
+    
+    Attributes:
+        new_password (PasswordField): Field for user's new password. Must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.
+        confirm_password (PasswordField): Field to confirm user's password. Must match the new password.
+        submit (SubmitField): Field to submit the form.   
+    """
+    new_password = PasswordField('New Password *', validators=[
+        DataRequired(),
+        Length(min=8, max=255),
+        Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$',
+               message='Password must have at least one uppercase letter, one lowercase letter, one number, and one special character.')
+        ])
+    
+    confirm_password = PasswordField('Confirm Password *', validators=[DataRequired(), EqualTo('new_password', message='Passwords must match')])
+    
+    submit = SubmitField('Reset Password')

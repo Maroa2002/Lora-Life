@@ -19,9 +19,9 @@ import pyotp
 from werkzeug.utils import secure_filename
 from app.models import db, User, Vet, Farmer, Location
 from app.utils import allowed_file
-from .forms import RoleSelectForm, FarmerRegistrationForm, VetRegistrationForm, LoginForm, OTPForm
+from .forms import RoleSelectForm, FarmerRegistrationForm, VetRegistrationForm, LoginForm, OTPForm, ForgotPasswordForm, ResetPasswordForm
 from app.utils import COUNTY_TOWNS
-from .utils import register_user, generate_confirmation_token, verify_email_token, send_verification_email
+from .utils import register_user, get_serializer, verify_email_token, send_verification_email
 from app import mail
 
 from . import auth_bp
@@ -48,6 +48,20 @@ def select_role():
             return redirect(url_for('auth.register_admin'))
     
     return render_template('select_role.html', form=form)
+
+@auth_bp.route('/get_towns', methods=['GET'])
+def get_towns():
+    """
+    Route to get towns based on the selected county.
+
+    POST: Processes the county selected and returns the towns in that county.
+
+    Returns:
+        Response: JSON object with the towns in the selected county.
+    """
+    county = request.args.get('county')
+    towns = COUNTY_TOWNS.get(county)
+    return jsonify({'towns': towns})
 
 @auth_bp.route('/register/farmer', methods=['POST', 'GET'])
 def register_farmer():
@@ -134,8 +148,6 @@ def verify_email(token):
         flash('The verification link is invalid or has expired.', 'danger')
         
     return redirect(url_for('auth.login'))
-        
-    
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -238,22 +250,86 @@ def verify_otp():
     else:
         print('Form validation failed', form.errors)
         
-    return render_template('verify_otp.html', form=form)  
+    return render_template('verify_otp.html', form=form)
 
-@auth_bp.route('/get_towns', methods=['GET'])
-def get_towns():
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
     """
-    Route to get towns based on the selected county.
+    Route to handle password reset.
+    
+    GET: Renders the forgot password form.
+    POST: Processes the forgot password form and sends a password reset email.
+    
+    Returns:
+        Response: Rendered HTML template for the forgot password page.
+    """
+    form = ForgotPasswordForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        
+        user = User.query.filter(User.email == email).first()
+        
+        if user:
+            s = get_serializer()
+            
+            token = s.dumps(email, salt='password-reset-salt')
+            reset_url = url_for('auth.reset_password', token=token, _external=True)
+            
+            msg = Message('Password Reset Request', sender=current_app.config['MAIL_USERNAME'], recipients=[email])
+            msg.body = f'Click the link below to reset your password:\n{reset_url}'
+            
+            try:
+                mail.send(msg)
+                flash('A password reset link has been sent to your email.' 'info')
+            except Exception as e:
+                flash('An error occured sending password-reset email', 'danger')
+        
+    return render_template('forgot_password.html', form=form)
 
-    POST: Processes the county selected and returns the towns in that county.
+@auth_bp.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    """
+    Route to reset password.
+
+    Args:
+        token (str): The password reset token.
+
+    GET: Renders the reset password form.
+    POST: Processes the reset password form and updates the user's password.
 
     Returns:
-        Response: JSON object with the towns in the selected county.
+        Response: Rendered HTML template for the reset password page or redirects to the login page.
     """
-    county = request.args.get('county')
-    towns = COUNTY_TOWNS.get(county)
-    return jsonify({'towns': towns})
+    form = ResetPasswordForm()
     
+    s = get_serializer()
+    try:
+        email = s.loads(token, salt='password-reset-salt', max_age=3600)
+    except:
+        flash('The password reset link is invalid or has expired.', 'danger')
+        return redirect(url_for('auth.forgot_password'))
+    
+    if form.validate_on_submit():
+        new_password = form.new_password.data
+        confirm_password = form.confirm_password.data
+        
+        if not new_password or not confirm_password:
+            flash('Please fill in all the fields', 'warning')
+            return redirect(url_for('auth.reset_password', token=token))
+        
+        if new_password != confirm_password:
+            flash('Passwords do not match!', 'warning')
+            return redirect(url_for('auth.reset_password', token=token))
+        
+        user = User.query.filter(User.email == email).first()
+        if user:
+            user.set_password(new_password)
+            db.session.commit()
+            flash('Your password has been reset!', 'success')
+            return redirect(url_for('auth.login'))
+    
+    return render_template('reset_password.html', form=form, token=token)
+
 @auth_bp.route('/logout')
 @login_required
 def logout():
