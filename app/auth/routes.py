@@ -140,7 +140,7 @@ def login():
         if not user or not user.check_password(password):
             flash('Invalid email or password', 'danger')
             print('Invalid email or password')
-            return redirect(url_for('auth.login_user'))
+            return redirect(url_for('auth.login'))
         
         login_user(user)
         print('User logged in successfully', user)

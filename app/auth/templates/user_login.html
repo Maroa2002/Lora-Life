@@ -115,11 +115,35 @@
         .register-link a:hover {
             text-decoration: underline;
         }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <div class="form">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             <h1>Welcome Back!</h1>
             <form action="{{ url_for('auth.login') }}" method="post">
                 {{ form.csrf_token}}
