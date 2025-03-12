@@ -45,6 +45,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(255), nullable=False)
     user_role = db.Column(db.String(20), nullable=False)
     profile_picture = db.Column(db.String(255), nullable=True)
+    otp_secret = db.Column(db.String(32), nullable=True) # Secret key for two-factor authentication
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
