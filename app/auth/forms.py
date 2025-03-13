@@ -237,13 +237,24 @@ class ResetPasswordForm(FlaskForm):
         confirm_password (PasswordField): Field to confirm user's password. Must match the new password.
         submit (SubmitField): Field to submit the form.   
     """
-    new_password = PasswordField('New Password *', validators=[
-        DataRequired(),
-        Length(min=8, max=255),
-        Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$',
-               message='Password must have at least one uppercase letter, one lowercase letter, one number, and one special character.')
-        ])
+    new_password = PasswordField(
+        'New Password *', 
+        validators=[
+            DataRequired(),
+            Length(min=8, max=255),
+            Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$',
+                message='Password must have at least one uppercase letter, one lowercase letter, one number, and one special character.')
+        ],
+        render_kw={"placeholder": "Enter your new password"}
+    )
     
-    confirm_password = PasswordField('Confirm Password *', validators=[DataRequired(), EqualTo('new_password', message='Passwords must match')])
+    confirm_password = PasswordField(
+        'Confirm New Password *', 
+        validators=[
+            DataRequired(), 
+            EqualTo('new_password', message='Passwords must match')
+            ], 
+        render_kw={"placeholder": "Confirm your new password"}
+    )
     
     submit = SubmitField('Reset Password')
