@@ -280,7 +280,7 @@ def forgot_password():
             
             try:
                 mail.send(msg)
-                flash('A password reset link has been sent to your email.' 'info')
+                flash('A password reset link has been sent to your email.', 'info')
             except Exception as e:
                 flash('An error occured sending password-reset email', 'danger')
         
