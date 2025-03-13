@@ -218,7 +218,7 @@ class ForgotPasswordForm(FlaskForm):
         email (StringField): Field for user's email.
     """
     email = StringField(
-        'Email',
+        'Enter you email to reset your password.',
         validators=[
             DataRequired(), 
             Email(), 
