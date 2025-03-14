@@ -5,6 +5,10 @@ It includes the following models:
 - User: Represents a user in the system.
 - Farmer: Represents a farmer profile.
 - Vet: Represents a vet profile.
+- Admin: Represents an admin user in the system.
+- Location: Represents a location.
+- Livestock: Represents livestock data.
+- LivestockHealth: Represents livestock health data.
 - VetAvailability: Represents the availability slots for vets.
 - Appointment: Represents appointments between farmers and vets.
 
@@ -27,12 +31,16 @@ class User(db.Model, UserMixin):
         email (str): The email address of the user.
         phone (str): The phone number of the user.
         password_hash (str): The hashed password of the user.
-        user_role (str): The role of the user (farmer or vet).
+        profile_picture (str): The path to the user's profile picture.
+        otp_secret (str): Secret key for two-factor authentication.
+        email_verified (bool): Indicates if the user's email is verified.
         profile_picture (str): The path to the user's profile picture.
         created_at (datetime): The timestamp when the user was created.
         updated_at (datetime): The timestamp when the user was last updated.
         farmer_profile (relationship): One-to-one relationship with the Farmer profile.
         vet_profile (relationship): One-to-one relationship with the Vet profile.
+        admin_profile (relationship): One-to-one relationship with the Admin profile.
+        location (relationship): One-to-one relationship with the Location.
     """
 
     __tablename__ = 'users'
@@ -126,6 +134,9 @@ class Farmer(db.Model):
     animal_count = db.Column(db.Integer, nullable=False, default=0)
     alert_preference = db.Column(db.Enum('email', 'sms', 'whatsapp' , 'app', name='alert_preferences'), nullable=False, default='app')
     preferred_language = db.Column(db.String(255), nullable=False, default='English')
+    
+    # Relationships
+    livestock = db.relationship('Livestock', backref='farmer', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<Farmer {self.farm_name}>'
@@ -183,6 +194,64 @@ class Location(db.Model):
 
     def __repr__(self):
         return f'<Location {self.county} - {self.town}>'
+    
+
+class Livestock(db.Model):
+    """
+    Represents livestock data.
+
+    Attributes:
+        id (int): The unique identifier for the livestock.
+        farmer_id (int): The ID of the associated farmer.
+        name (str): The name of the livestock.
+        age (int): The age of the livestock.
+        breed (str): The breed of the livestock.
+        created_at (datetime): The timestamp when the livestock was created.
+    """
+    
+    __tablename__ = 'livestock'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    farmer_id = db.Column(db.Integer, db.ForeignKey('farmers.id'), nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+    breed = db.Column(db.String(255), nullable=False)
+    weight = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    health_data = db.relationship('LivestockHealth', backref='livestock', cascade='all, delete-orphan')
+    appointments = db.relationship('Appointment', backref='livestock', cascade='all, delete-orphan')
+    
+    def __repr__(self):
+        return f'<Livestock {self.name}>'
+
+
+class LivestockHealth(db.Model):
+    """
+    Represents livestock health data.
+
+    Attributes:
+        id (int): The unique identifier for the health data.
+        farmer_id (int): The ID of the associated farmer.
+        livestock_id (int): The ID of the associated livestock.
+        temperature (float): The temperature of the livestock.
+        pulse (int): The pulse rate of the livestock.
+        created_at (datetime): The timestamp when the health data was created.
+        updated_at (datetime): The timestamp when the health data was last updated.
+    """
+    
+    __tablename__ = 'livestock_health'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    livestock_id = db.Column(db.Integer, db.ForeignKey('livestock.id'), nullable=False)
+    temperature = db.Column(db.Float, nullable=False)
+    pulse = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<LivestockHealth {self.id}>'
 
 
 class VetAvailability(db.Model):
@@ -223,6 +292,7 @@ class Appointment(db.Model):
         farmer_id (int): The ID of the associated farmer.
         vet_id (int): The ID of the associated vet.
         slot_id (int): The ID of the associated availability slot.
+        livestock_id (int): The ID of the associated livestock.
         notes (str): Additional notes for the appointment.
         status (str): The status of the appointment (pending, confirmed, completed, cancelled).
         created_at (datetime): The timestamp when the appointment was created.
@@ -234,6 +304,7 @@ class Appointment(db.Model):
     farmer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     vet_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     slot_id = db.Column(db.Integer, db.ForeignKey('vet_availability.id'), nullable=False)
+    livestock_id = db.Column(db.Integer, db.ForeignKey('livestock.id'), nullable=False)
     notes = db.Column(db.Text)
     status = db.Column(db.Enum('pending', 'confirmed', 'completed', 'cancelled'), default='pending', nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
