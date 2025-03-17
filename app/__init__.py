@@ -19,6 +19,7 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_mail import Mail
 from .config import Config
+from .health_monitoring.events import socketio
 
 # Initialize Flask extensions
 db = SQLAlchemy()
@@ -42,6 +43,7 @@ def create_app():
     migrate = Migrate(app, db)
     CORS(app)
     mail.init_app(app)
+    socketio.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     
@@ -51,6 +53,7 @@ def create_app():
     from .vet import vet_bp as vet_blueprint
     from .chatbot import chatbot_bp as chatbot_blueprint
     from .main import main_bp as main_blueprint
+    from .health_monitoring import health_monitoring_bp as health_monitoring_blueprint
     
     # Register blueprints
     app.register_blueprint(main_blueprint)
@@ -58,6 +61,7 @@ def create_app():
     app.register_blueprint(farmer_blueprint, url_prefix='/farmer')
     app.register_blueprint(vet_blueprint, url_prefix='/vet')
     app.register_blueprint(chatbot_blueprint, url_prefix='/chatbot')
+    app.register_blueprint(health_monitoring_blueprint, url_prefix='/health-monitoring')
     
     # Import models
     from .models import User
