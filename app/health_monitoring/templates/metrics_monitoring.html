@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Real Time Monitoring</title>
 
     <!-- Socket.io CDN -->
@@ -12,33 +12,199 @@
       crossorigin="anonymous"
     ></script>
 
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/raphael/raphael.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/justgage/justgage.js"></script>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
 
+      body {
+        display: flex;
+        height: 100vh;
+        background-color: #f4f4f4;
+        color: #333;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 220px;
+        background: #2c3e50;
+        padding: 20px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .sidebar h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+
+      .sidebar ul {
+        list-style: none;
+        width: 100%;
+      }
+
+      .sidebar ul li {
+        padding: 12px;
+        text-align: center;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        transition: 0.3s;
+        background: #34495e;
+        color: white;
+        font-weight: bold;
+      }
+
+      .sidebar ul li:hover {
+        background: #1abc9c;
+      }
+
+      /* Dashboard */
+      .dashboard {
+        flex: 1;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        background: white;
+        border-radius: 10px;
+        margin: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .dashboard h1 {
+        text-align: center;
+        font-size: 24px;
+        color: #2c3e50;
+        font-weight: bold;
+      }
+
+      /* Widget Container */
+      .widgets {
+        display: flex;
+        justify-content: space-evenly;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      /* Gauge Styling */
+      .gauge-container {
+        text-align: center;
+        background: #ecf0f1;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .gauge-container:hover {
+        transform: scale(1.05);
+      }
+
+      .gauge-container h3 {
+        margin-bottom: 10px;
+        color: #2c3e50;
+        font-weight: bold;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
         body {
-            background-color: #f4f4f4;
-            color: #333;
+          flex-direction: column;
+          align-items: center;
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
+        .sidebar {
+          width: 100%;
+          text-align: center;
+          padding: 15px;
         }
+
+        .dashboard {
+          width: 90%;
+          margin: 10px;
+        }
+
+        .widgets {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
     </style>
-</head>
-<body>
-    <h1>Real Time Livestock Health Metrics Monitoring</h1>
+  </head>
+  <body>
+    <div class="sidebar">
+      <h2>Dashboard</h2>
+      <ul>
+        <li>Home</li>
+        <li>Historical Data</li>
+        <li>Settings</li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard">
+      <h1>Real Time Livestock Health Metrics Monitoring</h1>
+
+      <!-- Gauges -->
+      <div class="widgets">
+        <div class="gauge-container">
+          <h3>Temperature (°C)</h3>
+          <div id="tempGauge" style="width: 150px; height: 120px"></div>
+        </div>
+        <div class="gauge-container">
+          <h3>Pulse (BPM)</h3>
+          <div id="pulseGauge" style="width: 150px; height: 120px"></div>
+        </div>
+      </div>
+    </div>
 
     <script>
-        const socket = io();
+      const socket = io();
 
-        socket.on('connect', () => {
-            console.log("✅ Connected to server");
-        });
+      socket.on("connect", () => {
+        console.log("✅ Connected to server");
+      });
+
+      const tempGauge = new JustGage({
+        id: "tempGauge",
+        value: 0,
+        min: 30,
+        max: 45,
+        title: "Temperature",
+        label: "°C",
+        gaugeWidthScale: 0.6,
+        levelColors: ["#00b894", "#fdcb6e", "#d63031"], // green, yellow, red
+      });
+
+      const pulseGauge = new JustGage({
+        id: "pulseGauge",
+        value: 0,
+        min: 40,
+        max: 120,
+        title: "Pulse",
+        label: "BPM",
+        gaugeWidthScale: 0.6,
+        levelColors: ["#00b894", "#fdcb6e", "#d63031"], // green, yellow, red
+      });
+
+      socket.on("livestock_data", (payload) => {
+        console.log("📡 Livestock data received", payload);
+
+        tempGauge.refresh(payload.temperature);
+        pulseGauge.refresh(payload.pulse);
+      });
     </script>
-</body>
+  </body>
 </html>
