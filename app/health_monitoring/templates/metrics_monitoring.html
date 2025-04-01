@@ -118,6 +118,40 @@
         font-weight: bold;
       }
 
+      /* Chart Container */
+      .charts-container {
+        display: flex;
+        justify-content: space-evenly;
+        gap: 20px;
+        flex-wrap: wrap;
+        padding: 20px;
+      }
+
+      .chart {
+        width: 45%;
+        height: 300px;
+        background: #ecf0f1;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .chart:hover {
+        transform: scale(1.05);
+      }
+
+      .chart h3 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 10px;
+      }
+
+      .chart canvas {
+        width: 100% !important;
+        height: 100% !important;
+      }
+
       /* Responsive Design */
       @media (max-width: 768px) {
         body {
@@ -139,6 +173,15 @@
         .widgets {
           flex-direction: column;
           align-items: center;
+        }
+
+        .charts-container {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .chart {
+          width: 90%;
         }
       }
     </style>
@@ -166,6 +209,18 @@
         <div class="gauge-container">
           <h3>Pulse (BPM)</h3>
           <div id="pulseGauge" style="width: 150px; height: 120px"></div>
+        </div>
+      </div>
+
+      <!-- Line Charts -->
+      <div class="charts-container">
+        <div class="chart">
+          <h3>Temperature Over Time (°C)</h3>
+          <canvas id="temperatureChart"></canvas>
+        </div>
+        <div class="chart">
+          <h3>Pulse Over Time (BPM)</h3>
+          <canvas id="pulseChart"></canvas>
         </div>
       </div>
     </div>
@@ -199,11 +254,101 @@
         levelColors: ["#00b894", "#fdcb6e", "#d63031"], // green, yellow, red
       });
 
+      // Chart.js Configurations
+      const temperatureCtx = document
+        .getElementById("temperatureChart")
+        .getContext("2d");
+      const pulseCtx = document.getElementById("pulseChart").getContext("2d");
+
+      // Initial Data for Charts
+      const initialLabels = Array(10).fill(""); // 10 empty labels for smooth transition
+      const initialData = Array(10).fill(37.0); // Initial temperature and pulse values
+
+      const temperatureChart = new Chart(temperatureCtx, {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [
+            {
+              label: "Temperature (°C)",
+              data: [],
+              borderColor: "#e74c3c",
+              backgroundColor: "rgba(231, 76, 60, 0.2)",
+              borderWidth: 2,
+              fill: true,
+              tension: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { display: false },
+            y: { beginAtZero: false, suggestedMin: 30, suggestedMax: 45 },
+          },
+        },
+      });
+
+      const pulseChart = new Chart(pulseCtx, {
+        type: "line",
+        data: {
+          labels: initialLabels,
+          datasets: [
+            {
+              label: "Pulse (BPM)",
+              data: initialData,
+              borderColor: "#3498db",
+              backgroundColor: "rgba(52, 152, 219, 0.2)",
+              borderWidth: 2,
+              fill: true,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { display: false },
+            y: { beginAtZero: false, suggestedMin: 40, suggestedMax: 120 },
+          },
+        },
+      });
+
       socket.on("livestock_data", (payload) => {
         console.log("📡 Livestock data received", payload);
 
+        if (!payload || !payload.temperature || !payload.pulse) {
+          console.warn("❌ Invalid payload received", payload);
+          return; // Ignore invalid payload
+        }
+
+        console.log("📊 Updating Temperature Chart with:", payload.temperature);
+        console.log("📊 Updating Pulse Chart with:", payload.pulse);
+
         tempGauge.refresh(payload.temperature);
         pulseGauge.refresh(payload.pulse);
+
+        // Update Line Charts
+        function updateChart(chart, newValue, min, max) {
+          if (newValue < min || newValue > max || isNaN(newValue)) {
+            console.warn(`❌ Ignoring invalid value: ${newValue}`);
+            return; // Ignore the value if it's out of range or NaN
+          }
+
+          chart.data.labels.push(""); // Add new empty label for smooth scrolling effect
+          chart.data.datasets[0].data.push(newValue); // Add new data point
+
+          if (chart.data.datasets[0].data.length > 10) {
+            chart.data.labels.shift(); // Remove oldest label
+            chart.data.datasets[0].data.shift(); // Remove oldest data point
+          }
+
+          chart.update();
+        }
+
+        updateChart(temperatureChart, payload.temperature, 30, 45);
+        updateChart(pulseChart, payload.pulse, 40, 120);
       });
     </script>
   </body>
