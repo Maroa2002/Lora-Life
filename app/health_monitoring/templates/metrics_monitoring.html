@@ -153,6 +153,29 @@
         height: 100% !important;
       }
 
+      /* Alert Box */
+      .alertBox {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background-color: #f39c12;
+        color: #fff;
+        padding: 15px;
+        border-radius: 5px;
+        width: 250px;
+        display: none; /* Hidden by default */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000; /* Ensure it appears above other elements */
+      }
+
+      #tempAlertBox {
+        top: 20px;
+      }
+
+      #pulseAlertBox {
+        top: 80px;
+      }
+
       /* Responsive Design */
       @media (max-width: 768px) {
         body {
@@ -196,6 +219,10 @@
         <li>Settings</li>
       </ul>
     </div>
+
+    <!-- Alert Box -->
+    <div id="tempAlertBox" class="alertBox"></div>
+    <div id="pulseAlertBox" class="alertBox"></div>
 
     <!-- Main Content -->
     <div class="dashboard">
@@ -350,6 +377,36 @@
 
         updateChart(temperatureChart, payload.temperature, 30, 45);
         updateChart(pulseChart, payload.pulse, 40, 120);
+      });
+
+      socket.on("livestock_alert", (alert) => {
+        console.log("🚨 Alert received:", alert);
+
+        let alertBox = null;
+
+        if (alert.type === "temperature") {
+          alertBox = document.getElementById("tempAlertBox");
+        } else if (alert.type === "pulse") {
+          alertBox = document.getElementById("pulseAlertBox");
+        }
+
+        if (alertBox) {
+          alertBox.style.display = "block";
+
+          if (alert.isExceeding) {
+            alertBox.innerHTML = `Alert! ${
+              alert.type.charAt(0).toUpperCase() + alert.type.slice(1)
+            } value of ${alert.value} exceeds the threshold!`;
+          } else {
+            alertBox.innerHTML = `Alert! ${
+              alert.type.charAt(0).toUpperCase() + alert.type.slice(1)
+            } value of ${alert.value} falls below the threshold!`;
+          }
+
+          setTimeout(() => {
+            alertBox.style.display = "none";
+          }, 5000); // Hide after 5 seconds
+        }
       });
     </script>
   </body>
