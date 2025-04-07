@@ -2,6 +2,9 @@ from flask import request
 from flask_socketio import join_room
 import eventlet
 
+from app.sms_utils.sms_service import send_sms
+from app.sms_utils.sms_templates import livestock_alert_template
+
 from .extensions import socketio
 from .shared_data import latest_health_data
 
@@ -36,14 +39,69 @@ def send_livestock_data():
             
             # Check if latest_health_data exceeds thresholds and send alerts
             if latest_health_data["temperature"] > TEMP_THRESHOLD_HIGH:
-                socketio.emit("livestock_alert", {"message": "High temperature detected!", "type": "temperature", "value": latest_health_data["temperature"], "isExceeding": True}, room="livestock_room")
+                send_sms(
+                    phone_number="254740830422",
+                    message=livestock_alert_template("temperature", latest_health_data["temperature"], True),
+                    ref_id="livestock_alert"
+                ) 
+                socketio.emit(
+                    "livestock_alert", 
+                    {
+                        "message": "High temperature detected!", 
+                        "type": "temperature", 
+                        "value": latest_health_data["temperature"], 
+                        "isExceeding": True
+                    }, 
+                    room="livestock_room")
             elif latest_health_data["temperature"] < TEMP_THRESHOLD_LOW:
-                socketio.emit("livestock_alert", {"message": "Low temperature detected!", "type": "temperature", "value": latest_health_data["temperature"], "isExceeding": False}, room="livestock_room")
+                send_sms(
+                    phone_number="254740830422",
+                    message=livestock_alert_template("temperature", latest_health_data["temperature"], False),
+                    ref_id="livestock_alert"
+                )
+                socketio.emit(
+                    "livestock_alert", 
+                    {
+                        "message": "Low temperature detected!", 
+                        "type": "temperature", 
+                        "value": latest_health_data["temperature"], 
+                        "isExceeding": False
+                        }, 
+                    room="livestock_room"
+                    )
             
             if latest_health_data["pulse"] > PULSE_THRESHOLD_HIGH:
-                socketio.emit("livestock_alert", {"message": "High pulse rate detected!", "type": "pulse", "value": latest_health_data["pulse"], "isExceeding": True}, room="livestock_room")
+                send_sms(
+                    phone_number="254740830422",
+                    message=livestock_alert_template("pulse", latest_health_data["pulse"], True),
+                    ref_id="livestock_alert"
+                )
+                socketio.emit(
+                    "livestock_alert", 
+                    {
+                        "message": "High pulse rate detected!", 
+                        "type": "pulse", 
+                        "value": latest_health_data["pulse"], 
+                        "isExceeding": True
+                        }, 
+                    room="livestock_room"
+                    )
             elif latest_health_data["pulse"] < PULSE_THRESHOLD_LOW:
-                socketio.emit("livestock_alert", {"message": "Low pulse rate detected!", "type": "pulse", "value": latest_health_data["pulse"], "isExceeding": False}, room="livestock_room")
+                send_sms(
+                    phone_number="254740830422",
+                    message=livestock_alert_template("pulse", latest_health_data["pulse"], False),
+                    ref_id="livestock_alert"
+                )
+                socketio.emit(
+                    "livestock_alert", 
+                    {
+                        "message": "Low pulse rate detected!", 
+                        "type": "pulse", 
+                        "value": latest_health_data["pulse"], 
+                        "isExceeding": False
+                        }, 
+                    room="livestock_room"
+                    )
             
             socketio.emit("livestock_data", latest_health_data, room="livestock_room")
         else:
