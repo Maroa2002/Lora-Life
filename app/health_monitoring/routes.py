@@ -1,5 +1,6 @@
 from flask import render_template, request, jsonify
-from app.models import db, LivestockHealth
+from flask_login import login_required
+# from app.models import db, LivestockHealth
 
 from . import health_monitoring_bp
 
@@ -21,6 +22,8 @@ def receive_health_data(livestock_id):
     Returns:
         str: Success message.
     """
+    from app.models import db, LivestockHealth, Livestock
+    
     # Get the data from the request
     data = request.get_json()
     print(f"📊 Received livestock health data for ID {livestock_id}: {data}")
@@ -39,7 +42,7 @@ def receive_health_data(livestock_id):
         return jsonify({"status": "error", "message": "Missing temperature or pulse values"}), 400
     
     # Check if the livestock ID exists in the database
-    livestock = LivestockHealth.query.get(livestock_id)
+    livestock = Livestock.query.get(livestock_id)
     if not livestock:
         print(f"❌ Livestock with ID {livestock_id} not found")
         return jsonify({"status": "error", "message": "Livestock not found"}), 404
