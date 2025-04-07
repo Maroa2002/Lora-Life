@@ -1,1 +1,1 @@
-latest_data = {}
+latest_health_data = {}

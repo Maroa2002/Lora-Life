@@ -3,7 +3,7 @@ from flask_socketio import join_room
 import eventlet
 
 from .extensions import socketio
-from .shared_data import latest_data
+from .shared_data import latest_health_data
 
 # Thresholds
 TEMP_THRESHOLD_HIGH = 40.0
@@ -30,22 +30,22 @@ def send_livestock_data():
         clients = len(list(socketio.server.manager.get_participants('/', 'livestock_room')))
         print(f"👥 Connected clients: {clients}")
         
-        if clients > 0 and latest_data:
-            print(f"📊 Latest data: {latest_data}")
-            print(f"📊 Sending data: {latest_data}")
+        if clients > 0 and latest_health_data:
+            print(f"📊 Latest data: {latest_health_data}")
+            print(f"📊 Sending data: {latest_health_data}")
             
-            # Check if latest_data exceeds thresholds and send alerts
-            if latest_data["temperature"] > TEMP_THRESHOLD_HIGH:
-                socketio.emit("livestock_alert", {"message": "High temperature detected!", "type": "temperature", "value": latest_data["temperature"], "isExceeding": True}, room="livestock_room")
-            elif latest_data["temperature"] < TEMP_THRESHOLD_LOW:
-                socketio.emit("livestock_alert", {"message": "Low temperature detected!", "type": "temperature", "value": latest_data["temperature"], "isExceeding": False}, room="livestock_room")
+            # Check if latest_health_data exceeds thresholds and send alerts
+            if latest_health_data["temperature"] > TEMP_THRESHOLD_HIGH:
+                socketio.emit("livestock_alert", {"message": "High temperature detected!", "type": "temperature", "value": latest_health_data["temperature"], "isExceeding": True}, room="livestock_room")
+            elif latest_health_data["temperature"] < TEMP_THRESHOLD_LOW:
+                socketio.emit("livestock_alert", {"message": "Low temperature detected!", "type": "temperature", "value": latest_health_data["temperature"], "isExceeding": False}, room="livestock_room")
             
-            if latest_data["pulse"] > PULSE_THRESHOLD_HIGH:
-                socketio.emit("livestock_alert", {"message": "High pulse rate detected!", "type": "pulse", "value": latest_data["pulse"], "isExceeding": True}, room="livestock_room")
-            elif latest_data["pulse"] < PULSE_THRESHOLD_LOW:
-                socketio.emit("livestock_alert", {"message": "Low pulse rate detected!", "type": "pulse", "value": latest_data["pulse"], "isExceeding": False}, room="livestock_room")
+            if latest_health_data["pulse"] > PULSE_THRESHOLD_HIGH:
+                socketio.emit("livestock_alert", {"message": "High pulse rate detected!", "type": "pulse", "value": latest_health_data["pulse"], "isExceeding": True}, room="livestock_room")
+            elif latest_health_data["pulse"] < PULSE_THRESHOLD_LOW:
+                socketio.emit("livestock_alert", {"message": "Low pulse rate detected!", "type": "pulse", "value": latest_health_data["pulse"], "isExceeding": False}, room="livestock_room")
             
-            socketio.emit("livestock_data", latest_data, room="livestock_room")
+            socketio.emit("livestock_data", latest_health_data, room="livestock_room")
         else:
             print("🚫 No clients connected. Skipping data transmission.")
             

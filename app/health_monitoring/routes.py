@@ -21,6 +21,7 @@ def receive_health_data(livestock_id):
     Returns:
         str: Success message.
     """
+    # Get the data from the request
     data = request.get_json()
     print(f"📊 Received livestock health data for ID {livestock_id}: {data}")
     
@@ -28,23 +29,28 @@ def receive_health_data(livestock_id):
         print("❌ No data received")
         return jsonify({"status": "error", "message": "No data received"}), 400
     
+    # Extract temperature and pulse from the data
     temperature = data.get('temperature')
     pulse = data.get('pulse')
     
+    # Check if temperature and pulse are present in the data
     if temperature is None or pulse is None:
         print("❌ Invalid data format")
         return jsonify({"status": "error", "message": "Missing temperature or pulse values"}), 400
     
+    # Check if the livestock ID exists in the database
     livestock = LivestockHealth.query.get(livestock_id)
     if not livestock:
         print(f"❌ Livestock with ID {livestock_id} not found")
         return jsonify({"status": "error", "message": "Livestock not found"}), 404
 
+    # Check if the livestock belongs to the farmer
     farmer_id = livestock.farmer_id
     if livestock.farmer_id != farmer_id:
         print(f"❌ Unauthorized access to livestock ID {livestock_id}")
         return jsonify({"status": "error", "message": "Unauthorized access"}), 403
     
+    # Save the health data to the database
     health_data = LivestockHealth(
         livestock_id=livestock_id,
         temperature=temperature,
@@ -53,6 +59,15 @@ def receive_health_data(livestock_id):
     
     db.session.add(health_data)
     db.session.commit()
+    
+    # Update shared latest_data for real-time transmission
+    from .shared_data import latest_health_data
+    latest_health_data.clear()
+    latest_health_data.update({
+        "livestock_id": livestock_id,
+        "temperature": temperature,
+        "pulse": pulse
+    })
     
     return jsonify({"status": "succes", "message": "Health data saved successfully", "farmer_id": farmer_id}), 200
     
