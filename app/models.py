@@ -206,6 +206,7 @@ class Livestock(db.Model):
         name (str): The name of the livestock.
         age (int): The age of the livestock.
         breed (str): The breed of the livestock.
+        weight (float): The weight of the livestock.
         created_at (datetime): The timestamp when the livestock was created.
     """
     

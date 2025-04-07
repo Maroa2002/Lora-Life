@@ -18,9 +18,10 @@ Functions:
 
 from flask import current_app, render_template, request, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
-from app.models import db, Appointment, Vet, VetAvailability
+from app.models import db, Appointment, Vet, VetAvailability, Livestock
 from app.utils import send_email
 from datetime import datetime
+from .forms import LivestockForm
 
 from . import farmer_bp
 
@@ -134,6 +135,37 @@ def book_appointment(slot_id):
     
     flash('Appointment booked successfully', 'success')
     return redirect(url_for('farmer.farmer_profile'))
+
+@farmer_bp.route('/add-livestock', methods=['GET', 'POST'])
+@login_required
+def add_livestock():
+    """
+    Route for farmers to add livestock.
+
+    Returns:
+        Response: Rendered HTML template for adding livestock.
+    """
+    if current_user.user_role != 'farmer':
+        abort(403)
+        
+    form = LivestockForm()
+    
+    if form.validate_on_submit():
+        livestock = Livestock(
+            farmer_id =current_user.id,
+            name = form.name.data,
+            age = form.age.data,
+            breed = form.breed.data,
+            weight = form.weight.data
+        )
+        
+        db.session.add(livestock)
+        db.session.commit()
+        
+        flash('Livestock added successfully', 'success')
+        return redirect(url_for('farmer.farmer_profile'))
+    
+    return render_template('add_livestock.html', form=form)
 
 @farmer_bp.route('/appointments', methods=['GET'])
 @login_required
