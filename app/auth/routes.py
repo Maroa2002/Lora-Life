@@ -23,6 +23,8 @@ from .forms import RoleSelectForm, FarmerRegistrationForm, VetRegistrationForm, 
 from app.utils import COUNTY_TOWNS
 from .utils import register_user, get_serializer, verify_email_token, send_verification_email
 from app import mail
+from app.sms_utils.sms_service import send_sms
+from app.sms_utils.sms_templates import otp_template
 
 from . import auth_bp
 
@@ -181,6 +183,13 @@ def login():
             # Generate 6-digit OTP
             otp = pyotp.TOTP(user.otp_secret).now()
             print('OTP:', otp)
+            
+            # Send OTP to user's phone
+            send_sms(
+                phone_number=user.phone.lstrip('+'),
+                message=otp_template(otp),
+                ref_id='OTP',
+            )
         
             # Send OTP to user's email
             msg = Message('Your 2FA Code', sender=current_app.config['MAIL_USERNAME'], recipients=[email])

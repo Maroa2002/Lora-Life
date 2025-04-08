@@ -19,3 +19,15 @@ def livestock_alert_template(alert_type, value, is_exceeding):
         return f"Livestock Alert: {state} pulse detected!\nCurrent pulse: {value} BPM."
     
     return "Livestock Alert: Abnormal Health Parameter Detected!"
+
+def otp_template(otp_code):
+    """
+    Generates an OTP SMS template.
+    
+    Args:
+        otp_code (str): The OTP code to be sent.
+    
+    Returns:
+        str: The formatted OTP message.
+    """
+    return f"Your OTP code is: {otp_code}. Please do not share this code with anyone."
