@@ -23,6 +23,8 @@
             {% if current_user.user_role == 'farmer' %}
               <li><a href="{{ url_for('farmer.farmer_profile') }}">Appointments</a></li>
               <li><a href="{{ url_for('farmer.find_vets') }}">Find vets</a></li>
+              <li><a href="{{ url_for('farmer.add_livestock') }}">Add Livestock</a></li>
+              <li><a href="{{ url_for('chatbot.chatbot') }}">Chatbot</a></li>
             {% endif %}
           </ul>
         </nav>
