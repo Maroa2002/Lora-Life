@@ -196,7 +196,7 @@ def login():
             msg.body = f'Your One-Time password (OTP) is: {otp}'
             mail.send(msg)
         
-            flash('A 6-digit OTP has been sent to your email', 'info')
+            flash('A 6-digit OTP has been sent to your phone', 'info')
             return redirect(url_for('auth.verify_otp'))
         else:
             flash('Invalid email or password', 'danger')
