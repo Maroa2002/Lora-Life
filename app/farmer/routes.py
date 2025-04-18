@@ -82,7 +82,12 @@ def vet_availability(vet_id):
         VetAvailability.is_booked == False
         ).order_by(VetAvailability.start_time.asc()).all()
     
-    return render_template('vet_availability.html', vet=vet, availability_slots=availability_slots)
+    livestock_list = Livestock.query.filter_by(farmer_id=current_user.id).all()
+    if not livestock_list:
+        flash('You need to add livestock before booking an appointment.', 'warning')
+        return redirect(url_for('farmer.add_livestock'))
+    
+    return render_template('vet_availability.html', vet=vet, availability_slots=availability_slots, livestock_list=livestock_list)
 
 @farmer_bp.route('/book_appointment/<int:slot_id>', methods=['POST'])
 @login_required
@@ -109,10 +114,17 @@ def book_appointment(slot_id):
         flash('Cannot book past availability slots', 'danger')
         return redirect(url_for('farmer.vet_availability', vet_id=slot.vet_id))
     
+    # Extract livestock ID from the form data
+    livestock_id = request.form.get('livestock_id')
+    if not livestock_id:
+        flash('Please select a livestock to book an appointment.', 'danger')
+        return redirect(url_for('farmer.vet_availability', vet_id=slot.vet_id))
+    
     appointment = Appointment(
         farmer_id=current_user.id,
         vet_id=slot.vet_id,
         slot_id=slot.id,
+        livestock_id=int(livestock_id),
         notes=request.form.get('notes', '')
     )
     
@@ -124,7 +136,7 @@ def book_appointment(slot_id):
     vet = Vet.query.filter_by(user_id=slot.vet_id).first()
     if vet:
         vet_email = vet.user.email
-        message = f"Hello {vet.user.full_name},\n\nYou have a new appointment with {current_user.full_name} on {slot.start_time}."
+        message = f"Hello {vet.user.last_name},\n\nYou have a new appointment with {current_user.last_name} on {slot.start_time}."
         msg = 'Subject: New Appointment\n\n{}'.format(message)
         send_email(vet_email, msg)
     else:
