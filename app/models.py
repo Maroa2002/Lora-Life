@@ -275,7 +275,7 @@ class VetAvailability(db.Model):
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=False)
     is_booked = db.Column(db.Boolean, nullable=False)
-    available_days = db.Column(db.JSON, nullable=False)
+    # available_days = db.Column(db.JSON, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     vet = db.relationship('User', backref='availability_slots')
