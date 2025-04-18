@@ -21,6 +21,8 @@ from app.models import db, VetAvailability, Appointment
 from app.utils import send_email
 from datetime import datetime
 from flask_login import login_required, current_user
+from app.sms_utils.sms_service import send_sms
+from app.sms_utils.sms_templates import appointment_booked_farmer_template, appointment_cancelled_farmer_template
 
 from . import vet_bp
 
@@ -46,7 +48,7 @@ def manage_availability():
             
             if start_time >= end_time:
                 flash('End time must be after start time', 'danger')
-                return redirect(url_for('manage_availability'))
+                return redirect(url_for('vet.manage_availability'))
             
             # check for overlapping slots
             overlapping = VetAvailability.query.filter(
@@ -144,12 +146,26 @@ def manage_appointment(appointment_id, action):
         appointment.status = 'confirmed'
         message = f"Hello {appointment.farmer.last_name},\n\nYour appointment with Dr {current_user.last_name} has been confirmed."
         msg = 'Subject: Appointment Confirmed\n\n{}'.format(message)
+        send_sms(
+            appointment.farmer.phone.lstrip('+'),
+            appointment_booked_farmer_template(
+                current_user.last_name,
+                appointment.slot.start_time.strftime('%Y-%m-%d %H:%M')
+                )
+            )
         send_email(appointment.farmer.email, msg)
         flash('Appointment confirmed', 'success')
     elif action == 'cancel':
         appointment.status = 'cancelled'
         message = f"Hello {appointment.farmer.last_name},\n\nYour appointment with Dr {current_user.last_name} has been cancelled."
         msg = 'Subject: Appointment Cancelled\n\n{}'.format(message)
+        send_sms(
+            appointment.farmer.phone.lstrip('+'),
+            appointment_cancelled_farmer_template(
+                current_user.last_name,
+                appointment.slot.start_time.strftime('%Y-%m-%d %H:%M')
+                )
+            )
         send_email(appointment.farmer.email, msg)
         appointment.slot.is_booked = False
         flash('Appointment cancelled', 'danger')
