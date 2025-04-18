@@ -34,7 +34,7 @@
           <tbody>
             {% for appointment in appointments %}
             <tr>
-              <td>{{ appointment.farmer.full_name }}</td>
+              <td>{{ appointment.farmer.last_name }}</td>
               <td>{{ appointment.farmer.phone }}</td>
               <td>{{ appointment.slot.start_time.strftime('%Y-%m-%d') }} {{ appointment.slot.start_time.strftime('%H:%M') }}</td>
               <td><span class="status {{ appointment.status }}">{{ appointment.status }}</span></td>

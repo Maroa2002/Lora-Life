@@ -142,13 +142,13 @@ def manage_appointment(appointment_id, action):
     
     if action == 'confirm':
         appointment.status = 'confirmed'
-        message = f"Hello {appointment.farmer.full_name},\n\nYour appointment with Dr {current_user.full_name} has been confirmed."
+        message = f"Hello {appointment.farmer.last_name},\n\nYour appointment with Dr {current_user.last_name} has been confirmed."
         msg = 'Subject: Appointment Confirmed\n\n{}'.format(message)
         send_email(appointment.farmer.email, msg)
         flash('Appointment confirmed', 'success')
     elif action == 'cancel':
         appointment.status = 'cancelled'
-        message = f"Hello {appointment.farmer.full_name},\n\nYour appointment with Dr {current_user.full_name} has been cancelled."
+        message = f"Hello {appointment.farmer.last_name},\n\nYour appointment with Dr {current_user.last_name} has been cancelled."
         msg = 'Subject: Appointment Cancelled\n\n{}'.format(message)
         send_email(appointment.farmer.email, msg)
         appointment.slot.is_booked = False
