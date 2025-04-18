@@ -101,7 +101,7 @@
       {% for vet in vets %}
         <div class="vet">
             <div class="vet-info">
-            <h3>Dr. {{ vet.user.full_name }}</h3>
+            <h3>Dr. {{ vet.user.last_name }}</h3>
             <p>Specialization: {{ vet.specialization }}</p>
             </div>
             <a href="{{ url_for('farmer.vet_availability', vet_id=vet.id) }}" class="btn">View Availability</a>
