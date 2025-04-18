@@ -22,6 +22,8 @@ from app.models import db, Appointment, Vet, VetAvailability, Livestock
 from app.utils import send_email
 from datetime import datetime
 from .forms import LivestockForm
+from app.sms_utils.sms_service import send_sms
+from app.sms_utils.sms_templates import appointment_notification_vet_template
 
 from . import farmer_bp
 
@@ -137,6 +139,14 @@ def book_appointment(slot_id):
     if vet:
         vet_email = vet.user.email
         message = f"Hello {vet.user.last_name},\n\nYou have a new appointment with {current_user.last_name} on {slot.start_time}."
+        send_sms(
+            vet.user.phone.lstrip('+'),
+            appointment_notification_vet_template(
+                current_user.last_name,
+                slot.start_time,
+                request.form.get('notes', '')
+                )
+            )
         msg = 'Subject: New Appointment\n\n{}'.format(message)
         send_email(vet_email, msg)
     else:
@@ -161,7 +171,7 @@ def add_livestock():
         abort(403)
         
     form = LivestockForm()
-    
+   
     if form.validate_on_submit():
         livestock = Livestock(
             farmer_id =current_user.id,
