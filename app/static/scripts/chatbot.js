@@ -1,10 +1,10 @@
-let chatBox = document.getElementById("chat-box");
-let inputField = document.getElementById("user-input");
-let send_btn = document.getElementById("send_btn");
+const chatBox = document.getElementById("chat-box");
+const inputField = document.getElementById("user-input");
+const sendBtn = document.getElementById("send_btn");
 
 const sendMessage = async () => {
-  let userMessage = inputField.value.trim();
-  if (userMessage === "") return;
+  const userMessage = inputField.value.trim();
+  if (!userMessage) return;
 
   chatBox.innerHTML += `<p><strong>You:</strong> ${userMessage} </p>`;
   inputField.value = "";
@@ -28,4 +28,12 @@ const sendMessage = async () => {
   chatBox.scrollTop = chatBox.scrollHeight;
 };
 
-send_btn.addEventListener("click", sendMessage);
+// Send message on button click
+sendBtn.addEventListener("click", sendMessage);
+
+// Send message on Enter key press
+inputField.addEventListener("keypress", (event) => {
+  if (event.key === "Enter") {
+    sendMessage();
+  }
+});
