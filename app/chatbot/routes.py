@@ -39,7 +39,6 @@ def chatbot():
 
 
 @chatbot_bp.route('/get_response', methods=['POST'])
-@login_required
 def get_response():
     """
     Route to get a response from the chatbot.
