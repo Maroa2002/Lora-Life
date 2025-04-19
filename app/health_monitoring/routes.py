@@ -5,6 +5,7 @@ from flask_login import login_required
 from . import health_monitoring_bp
 
 @health_monitoring_bp.route('/metric-charts', methods=['GET'])
+@login_required
 def metrics_monitoring():
     """
     Route to display metrics monitoring page.
@@ -49,6 +50,7 @@ def receive_health_data(livestock_id):
 
     # Check if the livestock belongs to the farmer
     farmer_id = livestock.farmer_id
+    farmer_phone = livestock.farmer.user.phone
     if livestock.farmer_id != farmer_id:
         print(f"❌ Unauthorized access to livestock ID {livestock_id}")
         return jsonify({"status": "error", "message": "Unauthorized access"}), 403
@@ -69,21 +71,8 @@ def receive_health_data(livestock_id):
     latest_health_data.update({
         "livestock_id": livestock_id,
         "temperature": temperature,
-        "pulse": pulse
+        "pulse": pulse,
+        "farmer_phone": farmer_phone
     })
     
     return jsonify({"status": "succes", "message": "Health data saved successfully", "farmer_id": farmer_id}), 200
-    
-    # from .shared_data import latest_data
-    # data = request.json
-    
-    # if 'temperature' in data and 'pulse' in data:
-    #     latest_data.clear()
-    #     latest_data.update(data)
-        
-    #     print(f"📊 Received livestock data: {latest_data}")
-        
-    #     return jsonify({"status": "success", "message": "Data received successfully"}), 200
-    # else:
-    #     print("❌ Invalid data received")
-    #     return jsonify({"status": "error", "message": "Invalid data"}), 400
