@@ -47,6 +47,9 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     
+    from .chat_app import chat_socket
+    from .health_monitoring import events
+    
     # Import blueprints
     from .auth import auth_bp as auth_blueprint
     from .farmer import farmer_bp as farmer_blueprint
@@ -54,6 +57,7 @@ def create_app():
     from .chatbot import chatbot_bp as chatbot_blueprint
     from .main import main_bp as main_blueprint
     from .health_monitoring import health_monitoring_bp as health_monitoring_blueprint
+    from .chat_app import chat_app_bp as chat_app_blueprint
     
     # Register blueprints
     app.register_blueprint(main_blueprint)
@@ -62,6 +66,7 @@ def create_app():
     app.register_blueprint(vet_blueprint, url_prefix='/vet')
     app.register_blueprint(chatbot_blueprint, url_prefix='/chatbot')
     app.register_blueprint(health_monitoring_blueprint, url_prefix='/health-monitoring')
+    app.register_blueprint(chat_app_blueprint, url_prefix='/chat-app')
     
     # Import models
     from .models import User
