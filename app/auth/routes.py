@@ -236,6 +236,7 @@ def verify_otp():
 
             if pyotp.TOTP(user.otp_secret).verify(otp, valid_window=1):
                 session['user_id'] = user.id # Store the user ID in the session
+                session['username'] = user.last_name # Store the username in the session
                 print(f'Logged in user: {user.email}')
                 login_user(user)
                 print('Logged in successfully')
