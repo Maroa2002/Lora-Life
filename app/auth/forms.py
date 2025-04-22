@@ -27,7 +27,7 @@ class RoleSelectForm(FlaskForm):
         'Select Role:', # Label
         choices=[
             ('', 'Select a Role'), # Default option
-            ('admin', 'Admin'),
+            # ('admin', 'Admin'),
             ('farmer', 'Farmer'),
             ('vet', 'Vet')
         ],
