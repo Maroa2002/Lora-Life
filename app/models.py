@@ -54,7 +54,8 @@ class User(db.Model, UserMixin):
     user_role = db.Column(db.String(20), nullable=False)
     profile_picture = db.Column(db.String(255), nullable=True)
     otp_secret = db.Column(db.String(32), nullable=True) # Secret key for two-factor authentication
-    email_verified = db.Column(db.Boolean, default=False) # Indicates if the user's email is verified
+    # email_verified = db.Column(db.Boolean, default=False) # Indicates if the user's email is verified
+    email_verified = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

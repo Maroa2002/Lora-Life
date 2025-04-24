@@ -153,7 +153,7 @@ def manage_appointment(appointment_id, action):
                 appointment.slot.start_time.strftime('%Y-%m-%d %H:%M')
                 )
             )
-        send_email(appointment.farmer.email, msg)
+        # send_email(appointment.farmer.email, msg)
         flash('Appointment confirmed', 'success')
     elif action == 'cancel':
         appointment.status = 'cancelled'
@@ -166,7 +166,7 @@ def manage_appointment(appointment_id, action):
                 appointment.slot.start_time.strftime('%Y-%m-%d %H:%M')
                 )
             )
-        send_email(appointment.farmer.email, msg)
+        # send_email(appointment.farmer.email, msg)
         appointment.slot.is_booked = False
         flash('Appointment cancelled', 'danger')
     elif action == 'complete':

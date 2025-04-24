@@ -89,7 +89,7 @@ def register_farmer():
     if form.validate_on_submit():
         user = register_user(form, 'farmer')
         if user:
-            send_verification_email(user)
+            # send_verification_email(user)
             return redirect(url_for('auth.login'))
     
     return render_template('register_farmer.html', form=form)
@@ -118,7 +118,7 @@ def register_vet():
     if form.validate_on_submit():
         user = register_user(form, 'vet')
         if user:
-            send_verification_email(user)
+            # send_verification_email(user)
             return redirect(url_for('auth.login'))
     
     return render_template('register_vet.html', form=form)

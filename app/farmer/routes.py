@@ -147,8 +147,8 @@ def book_appointment(slot_id):
                 request.form.get('notes', '')
                 )
             )
-        msg = 'Subject: New Appointment\n\n{}'.format(message)
-        send_email(vet_email, msg)
+        # msg = 'Subject: New Appointment\n\n{}'.format(message)
+        # send_email(vet_email, msg)
     else:
         # Log the error
         current_app.logger.error('No vet found with user_id {}'.format(slot.vet_id))
