@@ -2,7 +2,7 @@ import smtplib
 from email.message import EmailMessage
 
 EMAIL_ADDRESS = "mgm.engineeringtie847@gmail.com"
-EMAIL_PASSWORD = "awkbtddnggejrvvs"
+EMAIL_PASSWORD = "GMAIL_PASSWORd"
 
 msg = EmailMessage()
 msg["Subject"] = "Test Email"
