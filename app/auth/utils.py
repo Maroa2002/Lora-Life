@@ -49,7 +49,7 @@ def register_user(form, role):
             user_role = role,
             profile_picture = profile_pic_path,
             otp_secret = otp_secret,
-            email_verified = False
+            # email_verified = False
         )
         new_user.set_password(password)
         
