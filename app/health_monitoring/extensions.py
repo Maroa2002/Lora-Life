@@ -10,4 +10,4 @@ The SocketIO instance is used to handle real-time events and communication in th
 from flask_socketio import SocketIO
 
 # Initialize SocketIO instance
-socketio = SocketIO()
+socketio = SocketIO(cors_allowed_origins="*")
