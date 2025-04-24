@@ -23,7 +23,7 @@ def send_sms(phone_number: str, message: str, ref_id: str = "defaultRefId"):
     :return: Response from the SMS service.
     """
     sms_data = {
-        "from": "TIARACONECT",
+        "from": "CONNECT",
         "to": phone_number,
         "message": message,
         "redId": ref_id,
