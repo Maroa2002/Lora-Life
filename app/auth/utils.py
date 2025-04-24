@@ -138,7 +138,7 @@ def send_verification_email(user):
     msg.body = f'Click the link below to verify your email address:\n{verify_url}'
     
     try:
-        mail.send(msg)
+        # mail.send(msg)
         flash('A verification email has been sent to your email address.', 'info')
     except Exception as e:
         flash('An error occurred sending the verification email.', 'danger')

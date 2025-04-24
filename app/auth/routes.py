@@ -194,7 +194,7 @@ def login():
             # Send OTP to user's email
             msg = Message('Your 2FA Code', sender=current_app.config['MAIL_USERNAME'], recipients=[email])
             msg.body = f'Your One-Time password (OTP) is: {otp}'
-            mail.send(msg)
+            # mail.send(msg)
         
             flash('A 6-digit OTP has been sent to your phone', 'info')
             return redirect(url_for('auth.verify_otp'))
@@ -289,7 +289,7 @@ def forgot_password():
             msg.body = f'Click the link below to reset your password:\n{reset_url}'
             
             try:
-                mail.send(msg)
+                # mail.send(msg)
                 flash('A password reset link has been sent to your email.', 'info')
             except Exception as e:
                 flash('An error occured sending password-reset email', 'danger')
