@@ -9,7 +9,8 @@ const sendMessage = async () => {
   chatBox.innerHTML += `<p><strong>You:</strong> ${userMessage} </p>`;
   inputField.value = "";
 
-  let url = "http://localhost:5000/chatbot/get_response";
+  // let url = "http://localhost:5000/chatbot/get_response";
+  let url = "/chatbot/get_response"; // Use relative URL for production
   let response = await fetch(url, {
     method: "POST",
     headers: {
