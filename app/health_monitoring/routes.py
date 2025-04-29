@@ -1,6 +1,6 @@
 from flask import render_template, request, jsonify
 from flask_login import login_required
-# from app.models import db, LivestockHealth
+from datetime import datetime
 
 from . import health_monitoring_bp
 
@@ -72,7 +72,8 @@ def receive_health_data(livestock_id):
         "livestock_id": livestock_id,
         "temperature": temperature,
         "pulse": pulse,
-        "farmer_phone": farmer_phone
+        "farmer_phone": farmer_phone,
+        "timestamp": datetime.utcnow().isoformat()
     })
     
     return jsonify({"status": "succes", "message": "Health data saved successfully", "farmer_id": farmer_id}), 200
